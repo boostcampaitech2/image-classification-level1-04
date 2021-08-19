@@ -47,7 +47,7 @@ class ConfigParser:
             2: logging.DEBUG
         }
 
-    @classmethod
+    @classmethod # factory pattern
     def from_args(cls, args, options=''):
         """
         Initialize this class from some cli arguments. Used in train, test.
