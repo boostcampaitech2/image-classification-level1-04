@@ -1,4 +1,4 @@
-# Boostcamp AI-Tech 2th - Master Slave Team
+# Boostcamp AI-Tech 2nd - Master Slave Team
 
 Level 1 P-Stage Image Classification Project Repository
 
