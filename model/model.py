@@ -1,5 +1,9 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision
+import numpy as np
+
 from base import BaseModel
 
 class MaskModel(nn.Module):
@@ -23,3 +27,26 @@ class MaskModel(nn.Module):
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
         return x
+
+
+class PretrainModelTV(nn.Module):
+    """
+    torch vision pretrain model format
+    https://pytorch.org/vision/stable/models.html
+    """
+    def __init__(self, model_name='resnet18',num_classes=18):
+
+        super().__init__()
+        self.num_classes = num_classes
+        self.model = getattr(torchvision.models, model_name)(pretrained=True)
+        print("네트워크 출력 채널 개수 (예측 class type 개수)", self.model.fc.weight.shape[0])
+        self.model.fc = torch.nn.Linear(in_features=512,
+                                            out_features=self.num_classes, bias=True)
+        
+        torch.nn.init.xavier_uniform_(self.model.conv1.weight)
+        torch.nn.init.xavier_uniform_(self.model.fc.weight)
+        stdv = 1/np.sqrt(self.num_classes)
+        self.model.fc.bias.data.uniform_(-stdv, stdv)
+
+    def forward(self, x):
+        return self.model(x)
