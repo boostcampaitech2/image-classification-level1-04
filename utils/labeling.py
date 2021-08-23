@@ -11,8 +11,7 @@ from torchvision import transforms
 def makeCSV(csv_path) :
     df = pd.read_csv(csv_path)
     with open('trainV3.csv', 'wt', newline='') as csvfile:
-        maskwriter = csv.writer(csvfile )
-        
+        maskwriter = csv.writer(csvfile)        
         images_name = ["mask1", "mask2", "mask3", "mask4", "mask5" , "normal", "incorrect_mask"]
         maskwriter.writerow(["gender", "race", "age", "path", "label"], )
         for index in range(len(df)) : 

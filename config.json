@@ -7,10 +7,10 @@
         "args": {}
     },
     "data_loader": {
-        "type": "CIFAR10DataLoader",
+        "type": "MaskDataLoader",
         "args":{
             "data_dir": "data/",
-            "batch_size": 128,
+            "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2,
