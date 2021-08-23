@@ -15,15 +15,9 @@ class MaskModel(nn.Module):
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
-<<<<<<< HEAD
         self.fc1 = nn.Linear(16 * 125 * 93, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, num_classes)
-=======
-        self.fc1 = nn.Linear(186000, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 18)
->>>>>>> ce454becfabaa196c573028060fd4d16fe37cbd4
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
