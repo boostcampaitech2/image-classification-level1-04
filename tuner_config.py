@@ -1,31 +1,30 @@
 {
-    "name": "PretrainResNet18",
+    "name": "Mnist_LeNet",
     "n_gpu": 1,
-
+    "istune" : true,
     "arch": {
-        "type": "PretrainModelTV",
+        "type": "MnistModel",
         "args": {}
     },
     "data_loader": {
-        "type": "MaskDataLoader",
+        "type": "MnistDataLoader",
         "args":{
-            "data_dir": "../input/data",
-            "batch_size": 128,
+            "data_dir": "data/",
+            "batch_size": [4, 16, 32],
             "shuffle": true,
             "validation_split": 0.1,
-            "num_workers": 1,
-            "trsfm": false
+            "num_workers": 2
         }
     },
     "optimizer": {
         "type": "Adam",
         "args":{
-            "lr": 0.001,
+            "lr": [1e-4, 1e-1],
             "weight_decay": 0,
             "amsgrad": true
         }
     },
-    "loss": "cross_entropy_loss",
+    "loss": "nll_loss",
     "metrics": [
         "accuracy", "top_k_acc"
     ],
@@ -37,7 +36,7 @@
         }
     },
     "trainer": {
-        "epochs": 100,
+        "epochs": 2,
 
         "save_dir": "saved/",
         "save_period": 1,
