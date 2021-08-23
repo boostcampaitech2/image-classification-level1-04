@@ -9,13 +9,8 @@
     "data_loader": {
         "type": "MaskDataLoader",
         "args":{
-<<<<<<< HEAD
             "data_dir": "../input/data",
             "batch_size": 128,
-=======
-            "data_dir": "../input/data/train/images",
-            "batch_size": 32,
->>>>>>> ce454becfabaa196c573028060fd4d16fe37cbd4
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 1,
