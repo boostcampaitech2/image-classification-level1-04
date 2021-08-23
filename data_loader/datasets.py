@@ -6,6 +6,7 @@ import pandas as pd
 from torch.utils.data import Dataset
 import torch
 
+
 class MaskDataset(Dataset):
     """
     dir_path: "../input/data/train"
