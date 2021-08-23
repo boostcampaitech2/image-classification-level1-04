@@ -61,3 +61,28 @@ class MaskDataset(Dataset):
                     elif data["age"] >=30:
                         label+=1                
                     maskwriter.writerow([data["gender"], data["race"], data["age"], img_path, label])
+
+class MaskSubmitDataset(Dataset):
+    """
+    Submission Dataset
+    """
+    def __init__(self, test_dir_path='/opt/ml/input/data/eval', transform=None):
+        super().__init__()
+
+        self.test_dir_path = test_dir_path
+        self.image_dir_path = os.path.join(self.test_dir_path, 'images')
+        self.df = pd.read_csv(os.path.join(self.test_dir_path, 'info.csv'))
+        self.img_paths = [os.path.join(self.image_dir_path, img_id) \
+                            for img_id in self.df.ImageID]
+
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.img_paths)
+    
+    def __getitem__(self, index):
+        image = PIL.Image.open(self.img_paths[index])
+
+        if self.transform:
+            image = self.transform(image)
+        return image
