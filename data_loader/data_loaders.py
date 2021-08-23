@@ -43,9 +43,9 @@ class MaskDataLoader(BaseDataLoader):
                 transforms.ToTensor(),
                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
             ])
-        self.data_dir = data_dir
+        self.data_dir = os.path.abspath(data_dir) 
         transform = transforms.Compose([transforms.ToTensor()])
-        self.dataset = CustomDataset(csv_path='../../input/data/train/trainV3.csv', images_folder='../../input/data/train/images', transform=transform)
+        self.dataset = CustomDataset(csv_path='../input/data/train/trainV3.csv', images_folder=self.data_dir, transform=transform)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
 class CustomDataset(Dataset):
@@ -62,8 +62,12 @@ class CustomDataset(Dataset):
             jpg_path = path+".jpg"
             image = PIL.Image.open(os.path.join(self.images_folder, jpg_path))
         except:
-            png_path = path+".png"
-            image = PIL.Image.open(os.path.join(self.images_folder, png_path))
+            try :
+                png_path = path+".png"
+                image = PIL.Image.open(os.path.join(self.images_folder, png_path))
+            except :
+                jpeg_path = path+".jpeg"
+                image = PIL.Image.open(os.path.join(self.images_folder, jpeg_path))
         if self.transform is not None:
             image = self.transform(image)        
         return image, label

@@ -9,7 +9,7 @@
     "data_loader": {
         "type": "MaskDataLoader",
         "args":{
-            "data_dir": "data/",
+            "data_dir": "../input/data/train/images",
             "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.1,
@@ -37,7 +37,7 @@
         }
     },
     "trainer": {
-        "epochs": 100,
+        "epochs": 30,
 
         "save_dir": "saved/",
         "save_period": 1,
