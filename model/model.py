@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 from base import BaseModel
+from efficientnet_pytorch import EfficientNet
 
 class MaskModel(nn.Module):
     """
@@ -22,4 +23,27 @@ class MaskModel(nn.Module):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
+        return x
+
+class EfficientNet_b0(nn.Module):
+    def __init__(self):
+        super(EfficientNet_b0, self).__init__()
+        self.model = EfficientNet.from_pretrained('efficientnet-b0')
+
+        self.classifier_layer = nn.Sequential(
+            nn.Linear(1280 , 512),
+            nn.BatchNorm1d(512),
+            nn.Dropout(0.2),
+            nn.Linear(512 , 256),
+            nn.Linear(256 , 18)
+        )
+        
+    def forward(self, inputs):
+        x = self.model.extract_features(inputs)
+
+        # Pooling and final linear layer
+        x = self.model._avg_pooling(x)
+        x = x.flatten(start_dim=1)
+        x = self.model._dropout(x)
+        x = self.classifier_layer(x)
         return x

@@ -10,7 +10,6 @@ from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device
 
-
 # fix random seeds for reproducibility
 SEED = 123
 torch.manual_seed(SEED)
@@ -26,7 +25,7 @@ def main(config):
     data_loader = config.init_obj('data_loader', module_data)
     valid_data_loader = data_loader.split_validation()
 
-    # build model architecture, then print to console
+    # load pre-trained model
     model = config.init_obj('arch', module_arch)
     logger.info(model)
 

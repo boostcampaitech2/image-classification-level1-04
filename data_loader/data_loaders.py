@@ -17,7 +17,7 @@ class MaskDataLoader(BaseDataLoader):
             trsfm = transforms.Compose([
                 transforms.ToTensor(),
                 #[TODO] We should change normalize value by what pretrained model we use
-                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
             ])
         
         self.dataset = MaskDataset(csv_path=os.path.join(self.train_dir, 'train.csv'), transform=trsfm)
