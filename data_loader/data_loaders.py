@@ -1,46 +1,38 @@
-from torchvision import datasets, transforms
+import os
+from .datasets import MaskDataset
+from torchvision import transforms
 from base import BaseDataLoader
 
-
-class MnistDataLoader(BaseDataLoader):
+class MaskDataLoader(BaseDataLoader):
     """
-    MNIST data loading demo using BaseDataLoader
-    """
-    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True):
-        trsfm = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,))
-        ])
-        self.data_dir = data_dir
-        self.dataset = datasets.MNIST(self.data_dir, train=training, download=True, transform=trsfm)
-        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
-
-class CIFAR10DataLoader(BaseDataLoader):
-    """
-    MNIST data loading demo using BaseDataLoader
-    """
-    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True, trsfm=False):
-        if not trsfm or not training:
-            trsfm = transforms.Compose([
-                transforms.ToTensor(),
-                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-            ])
-        self.data_dir = data_dir
-        self.dataset = datasets.CIFAR10(self.data_dir, train=training, download=True, transform=trsfm)
-        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
-
-class MaskDataLoader(Dataset):
-    """
-    MNIST data loading demo using BaseDataLoader
+    Mask data loader
+    data_dir:str: data directory path "../input/data"
     """
     def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True, trsfm=False):
         self.data_dir = data_dir
+        self.train_dir = os.path.join(self.data_dir, 'train')
+        self.eval_dir = os.path.join(self.data_dir, 'eval')
         
         if not trsfm or not training:
             trsfm = transforms.Compose([
                 transforms.ToTensor(),
+                #[TODO] We should change normalize value by what pretrained model we use
                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
             ])
         
-        self.dataset = datasets.CIFAR10(self.data_dir, train=training, download=True, transform=trsfm)
+        self.dataset = MaskDataset(csv_path=os.path.join(self.train_dir, 'train.csv'), transform=trsfm)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    dataLoader = MaskDataLoader(data_dir="../input/data", batch_size=16)
+    images, labels = next(iter(dataLoader))
+    plt.figure(figsize=(12,12))
+    for n, (image, label) in enumerate(zip(images, labels), start=1):
+        plt.subplot(4,4,n)
+        image=image.permute(1,2,0)
+        plt.imshow(image)
+        plt.title("{}".format(label))
+        plt.axis('off')
+    plt.tight_layout()
+    plt.show()
