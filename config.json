@@ -14,7 +14,8 @@
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 1,
-            "trsfm": false
+            "trsfm": false,
+            "submit": false
         }
     },
     "optimizer": {
