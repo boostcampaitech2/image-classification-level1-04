@@ -35,10 +35,10 @@ class MaskDataLoader(BaseDataLoader):
                             csv_path=os.path.join(self.train_dir, 'train.csv'),
                             transform=trsfm)
         else:
-            trsfm = A.compose([
+            trsfm = A.Compose([
                 A.HueSaturationValue(),
                 A.HorizontalFlip(p=1),
-                A.Resize((512, 384)),
+                A.Resize(512, 384),
                 # Modify this value by what pretrained model you use
                 # ref: https://pytorch.org/vision/stable/models.html
                 A.Normalize(mean=[0.485, 0.456, 0.406],
