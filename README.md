@@ -10,6 +10,7 @@ Level 1 P-Stage Image Classification Project Repository
 * PyTorch >= 1.4 (1.9 recommended)
 * tqdm (Optional for `test.py`)
 * tensorboard >= 1.14 (see [Tensorboard Visualization](#tensorboard-visualization))
+* efficientnet_pytorch
 
 ## Folder Structure
   ```
@@ -63,23 +64,26 @@ Try `python train.py -c config.json` to run code.
 Config files are in `.json` format:
 ```javascript
 {
-  "name": "CIFAR10_Tutorial",        // training session name
-  "n_gpu": 1,                   // number of GPUs to use for training.
+  "name": "PretrainResNet18_Test",        // training session name
+  "n_gpu": 1,                             // number of GPUs to use for training.
   
   "arch": {
-    "type": "CIFAR10Model",       // name of model architecture to train
+    "type": "PretrainModelTV",       // name of model architecture to train
     "args": {
 
     }                
   },
   "data_loader": {
-    "type": "CIFAR10DataLoader",         // selecting data loader
+    "type": "MaskDataLoader",         // selecting data loader
     "args":{
-      "data_dir": "data/",             // dataset path
-      "batch_size": 64,                // batch size
+      "data_dir": "../input/data",    // dataset path
+      "batch_size": 128,                // batch size
       "shuffle": true,                 // shuffle training data before splitting
       "validation_split": 0.1          // size of validation dataset. float(portion) or int(number of samples)
       "num_workers": 2,                // number of cpu processes to be used for data loading
+      "trsfm": false,                  // use transforms
+      "submit": false                  // submission
+
     }
   },
   "optimizer": {
@@ -90,7 +94,13 @@ Config files are in `.json` format:
       "amsgrad": true
     }
   },
-  "loss": "nll_loss",                  // loss
+
+  "loss": {
+      "type": "cross_entropy_loss",    // loss
+      "args":{
+          "class_weight": true
+      }
+  },
   "metrics": [
     "accuracy", "top_k_acc"            // list of metrics to evaluate
   ],                         
@@ -126,19 +136,7 @@ Modify the configurations in `.json` config files, then run:
 You can resume from a previously saved checkpoint by:
 
   ```
-  python train.py --resume path/to/checkpoint
-  ```
-
-### Using Multiple GPU
-You can enable multi-GPU training by setting `n_gpu` argument of the config file to larger number.
-If configured to use smaller number of gpu than available, first n devices will be used by default.
-Specify indices of available GPUs by cuda environmental variable.
-  ```
-  python train.py --device 2,3 -c config.json
-  ```
-  This is equivalent to
-  ```
-  CUDA_VISIBLE_DEVICES=2,3 python train.py -c config.py
+  python train.py --resume path/to/checkpoint(e.g. saved/models/[confg.name]/[MMDD_Hashvalue]/checkpoint-epoch#.pth)
   ```
 
 ## Customization
@@ -169,7 +167,7 @@ which is increased to 256 by command line options.
 
 - [ ] Add transforms feature(or Albumentation)
 - [ ] `Weights & Biases` logger support
-- [ ] Add pretrained model(e.g. ResNet, EfficientNet, ...)
+- [*] Add pretrained model(e.g. , EfficientNet, ...)
 - [ ] Add Raytune Module
 
 ## License

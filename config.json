@@ -1,18 +1,18 @@
 {
-    "name": "PretrainResNet18",
+    "name": "EfficinetNet-b7",
     "n_gpu": 1,
 
     "arch": {
-        "type": "PretrainModelTV",
+        "type": "EFNetB7",
         "args": {}
     },
     "data_loader": {
         "type": "MaskDataLoader",
         "args":{
             "data_dir": "../input/data",
-            "batch_size": 128,
+            "batch_size": 32,
             "shuffle": true,
-            "validation_split": 0.1,
+            "validation_split": 0.2,
             "num_workers": 1,
             "trsfm": false,
             "submit": false
@@ -26,7 +26,12 @@
             "amsgrad": true
         }
     },
-    "loss": "cross_entropy_loss",
+    "loss": {
+        "type": "cross_entropy_loss",
+        "args":{
+            "class_weight": true
+        }
+    },
     "metrics": [
         "accuracy", "top_k_acc"
     ],
@@ -38,7 +43,7 @@
         }
     },
     "trainer": {
-        "epochs": 30,
+        "epochs": 25,
 
         "save_dir": "saved/",
         "save_period": 1,

@@ -37,7 +37,9 @@ def main(config):
         model = torch.nn.DataParallel(model, device_ids=device_ids)
 
     # get function handles of loss and metrics
-    criterion = getattr(module_loss, config['loss'])
+    weight = data_loader.dataset.class_weights.to(device) if config['loss']['args']['class_weight'] else None
+    criterion = config.init_ftn('loss', module_loss, weight=weight)
+    # criterion = getattr(module_loss, config['loss']['type'])(weight=weight)
     metrics = [getattr(module_metric, met) for met in config['metrics']]
 
     # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
