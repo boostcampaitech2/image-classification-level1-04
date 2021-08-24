@@ -27,6 +27,9 @@ class BaseDataLoader(DataLoader):
         super().__init__(sampler=self.sampler, **self.init_kwargs)
 
     def _split_sampler(self, split):
+        '''
+        stratified train & val split
+        '''
         if split == 0.0:
             return None, None
 
@@ -39,9 +42,6 @@ class BaseDataLoader(DataLoader):
         if isinstance(split, int):
             assert split > 0
             assert self.n_samples * split < self.n_samples, "validation set size is configured to be larger than entire dataset."
-            # len_valid = split
-        # else:
-            # len_valid = int(self.n_samples * split)
         
         train_idx, valid_idx = train_test_split(idx_full, stratify=labels, test_size=split, random_state=42)
         
