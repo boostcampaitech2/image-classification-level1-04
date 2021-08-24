@@ -1,9 +1,9 @@
 {
-    "name": "ResNet18Albu",
+    "name": "PretrainModelTimmEcaNFNet10_Baseline",
     "n_gpu": 1,
 
     "arch": {
-        "type": "PretrainModelTV",
+        "type": "PretrainModelTimmEcaNFNet10",
         "args": {}
     },
 
@@ -21,14 +21,14 @@
             "batch_size": 128,
             "shuffle": false,
             "validation_split": 0.0,
-            "num_workers": 1,
+            "num_workers": 2,
             "submit": false
         }
     },
     "optimizer": {
         "type": "Adam",
         "args":{
-            "lr": 0.001,
+            "lr": 2e-5,
             "weight_decay": 0,
             "amsgrad": true
         }
