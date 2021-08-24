@@ -3,14 +3,14 @@
     "n_gpu": 1,
 
     "arch": {
-        "type": "PretrainModelTV",
+        "type": "PretrainModelTimm",
         "args": {}
     },
     "data_loader": {
         "type": "MaskDataLoader",
         "args":{
             "data_dir": "../input/data",
-            "batch_size": 128,
+            "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 1,
@@ -37,7 +37,7 @@
         }
     },
     "trainer": {
-        "epochs": 30,
+        "epochs": 1,
 
         "save_dir": "saved/",
         "save_period": 1,
