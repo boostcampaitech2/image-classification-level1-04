@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 import numpy as np
+import timm
 
 from base import BaseModel
 from efficientnet_pytorch import EfficientNet
@@ -29,14 +30,12 @@ class MaskModel(nn.Module):
         x = self.fc3(x)
         return x
 
-
 class PretrainModelTV(nn.Module):
     """
     torch vision pretrain model format
     https://pytorch.org/vision/stable/models.html
     """
     def __init__(self, model_name='resnet18',num_classes=18):
-
         super().__init__()
         self.num_classes = num_classes
         self.model = getattr(torchvision.models, model_name)(pretrained=True)
@@ -48,6 +47,20 @@ class PretrainModelTV(nn.Module):
         torch.nn.init.xavier_uniform_(self.model.fc.weight)
         stdv = 1/np.sqrt(self.num_classes)
         self.model.fc.bias.data.uniform_(-stdv, stdv)
+
+    def forward(self, x):
+        return self.model(x)
+
+class PretrainModelTimm(nn.Module):
+    """
+    timm pretrained model format
+    https://fastai.github.io/timmdocs/
+    """
+    def __init__(self, model_name='efficientnet_b3', num_classes=18):
+        super().__init__()
+        self.num_classes = num_classes
+        self.model = timm.create_model(model_name, pretrained=True)
+        self.model.fc = torch.nn.Linear(in_features=512, out_features=self.num_classes, bias=True)
 
     def forward(self, x):
         return self.model(x)
