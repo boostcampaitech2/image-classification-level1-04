@@ -51,20 +51,6 @@ class PretrainModelTV(nn.Module):
     def forward(self, x):
         return self.model(x)
 
-class PretrainModelTimm(nn.Module):
-    """
-    timm pretrained model format
-    https://fastai.github.io/timmdocs/
-    """
-    def __init__(self, model_name='efficientnet_b3', num_classes=18):
-        super().__init__()
-        self.num_classes = num_classes
-        self.model = timm.create_model(model_name, pretrained=True)
-        self.model.fc = torch.nn.Linear(in_features=512, out_features=self.num_classes, bias=True)
-
-    def forward(self, x):
-        return self.model(x)
-
 class EfficientNet_b0(nn.Module):
     """
     batch size 64
@@ -91,3 +77,18 @@ class EfficientNet_b0(nn.Module):
         x = self.model._dropout(x)
         x = self.classifier_layer(x)
         return x
+
+class PretrainModelTimm(nn.Module):
+    """
+    batch size : 32
+    timm pretrained model format
+    https://fastai.github.io/timmdocs/
+    """
+    def __init__(self, model_name='efficientnet_b3', num_classes=18):
+        super().__init__()
+        self.num_classes = num_classes
+        self.model = timm.create_model(model_name, pretrained=True)
+        self.model.fc = torch.nn.Linear(in_features=512, out_features=self.num_classes, bias=True)
+
+    def forward(self, x):
+        return self.model(x)
