@@ -38,7 +38,7 @@ class PretrainModelTV(nn.Module):
         super().__init__()
         self.num_classes = num_classes
         self.model = getattr(torchvision.models, model_name)(pretrained=True)
-        print("네트워크 출력 채널 개수 (예측 class type 개수)", self.model.fc.weight.shape[0])
+        print("the number of class labels :", self.model.fc.weight.shape[0])
         self.model.fc = torch.nn.Linear(in_features=512,
                                             out_features=self.num_classes, bias=True)
         
@@ -68,3 +68,29 @@ class EFNetB7(nn.Module):
         for n, p in self.model.named_parameters():
             if '_fc' not in n:
                 p.requires_grad = False        
+class EfficientNet_b0(nn.Module):
+    """
+    batch size 64
+    """
+    def __init__(self, model_name='efficientnet-b0',num_classes=18):
+        super(EfficientNet_b0, self).__init__()
+        self.num_classes = num_classes
+        self.model = EfficientNet.from_pretrained(model_name)
+
+        self.classifier_layer = nn.Sequential(
+            nn.Linear(1280 , 512),
+            nn.BatchNorm1d(512),
+            nn.Dropout(0.2),
+            nn.Linear(512 , 256),
+            nn.Linear(256 , self.num_classes)
+        )
+
+    def forward(self, inputs):
+        x = self.model.extract_features(inputs)
+
+        # Pooling and final linear layer
+        x = self.model._avg_pooling(x)
+        x = x.flatten(start_dim=1)
+        x = self.model._dropout(x)
+        x = self.classifier_layer(x)
+        return x
