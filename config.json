@@ -1,9 +1,9 @@
 {
-    "name": "ResNet18Albu",
+    "name": "PretrainModelTimmEcaNFNet10_Baseline",
     "n_gpu": 1,
 
     "arch": {
-        "type": "PretrainModelTV",
+        "type": "PretrainModelTimmEcaNFNet10",
         "args": {}
     },
 
@@ -18,17 +18,17 @@
         "type": "MaskDataLoader",
         "args":{
             "data_dir": "../input/data",
-            "batch_size": 64,
+            "batch_size": 128,
             "shuffle": true,
             "validation_split": 0.1,
-            "num_workers": 1,
+            "num_workers": 2,
             "submit": false
         }
     },
     "optimizer": {
         "type": "Adam",
         "args":{
-            "lr": 0.001,
+            "lr": 2e-5,
             "weight_decay": 0,
             "amsgrad": true
         }
@@ -40,17 +40,17 @@
         }
     },
     "metrics": [
-        "accuracy", "top_k_acc"
+        "accuracy", "top_k_acc", "f1"
     ],
     "lr_scheduler": {
         "type": "StepLR",
         "args": {
-            "step_size": 50,
+            "step_size": 740,
             "gamma": 0.1
         }
     },
     "trainer": {
-        "epochs": 10,
+        "epochs": 2,
 
         "save_dir": "saved/",
         "save_period": 1,

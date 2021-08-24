@@ -1,20 +1,27 @@
 {
-    "name": "PretrainResNet18",
+    "name": "ResNet18Albu",
     "n_gpu": 1,
 
     "arch": {
         "type": "PretrainModelTV",
         "args": {}
     },
+
+    "transforms_select": {
+        "type": "transforms_select",
+        "args": {
+            "method": "DEFAULT"
+        }
+    },
+    
     "data_loader": {
         "type": "MaskDataLoader",
         "args":{
             "data_dir": "../input/data",
             "batch_size": 128,
-            "shuffle": true,
-            "validation_split": 0.1,
+            "shuffle": false,
+            "validation_split": 0.0,
             "num_workers": 1,
-            "trsfm": false,
             "submit": false
         }
     },
