@@ -1,5 +1,5 @@
 {
-    "name": "EfficinetNet-b7",
+    "name": "EfficinetNet-b7 for Mask",
     "n_gpu": 1,
 
     "arch": {
@@ -7,7 +7,7 @@
         "args": {}
     },
     "data_loader": {
-        "type": "MaskDataLoader",
+        "type": "DataLoaderForMask",    
         "args":{
             "data_dir": "../input/data",
             "batch_size": 32,

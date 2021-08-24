@@ -52,7 +52,7 @@ class PretrainModelTV(nn.Module):
 
 class EFNetB7(nn.Module):
     '''reference by : https://github.com/lukemelas/EfficientNet-PyTorch'''
-    def __init__(self, model_name='efficientnet-b7', num_classes=18):
+    def __init__(self, model_name='efficientnet-b7', num_classes=3):
         super().__init__()
         self.num_classes = num_classes
         self.mode_name = model_name
