@@ -20,7 +20,7 @@ class MaskDataLoader(BaseDataLoader):
         
         if not training or submit or trsfm is None:
             print('Use DEFALUT transforms...')
-            trsfm = transforms_select(method='DEFALUT')
+            trsfm = transforms_select(method='DEFAULT')
         
         if not submit:
             # Set up transforms for training
