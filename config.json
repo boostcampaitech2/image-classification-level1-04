@@ -18,7 +18,7 @@
         "type": "MaskDataLoader",
         "args":{
             "data_dir": "../input/data",
-            "batch_size": 128,
+            "batch_size": 64,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2,
@@ -50,7 +50,7 @@
         }
     },
     "trainer": {
-        "epochs": 2,
+        "epochs": 20,
 
         "save_dir": "saved/",
         "save_period": 1,
