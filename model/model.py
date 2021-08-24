@@ -39,7 +39,7 @@ class PretrainModelTV(nn.Module):
         super().__init__()
         self.num_classes = num_classes
         self.model = getattr(torchvision.models, model_name)(pretrained=True)
-        print("네트워크 출력 채널 개수 (예측 class type 개수)", self.model.fc.weight.shape[0])
+        print("the number of class labels :", self.model.fc.weight.shape[0])
         self.model.fc = torch.nn.Linear(in_features=512,
                                             out_features=self.num_classes, bias=True)
         
