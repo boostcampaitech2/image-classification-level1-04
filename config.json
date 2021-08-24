@@ -1,5 +1,5 @@
 {
-    "name": "PretrainResNet18",
+    "name": "PretrainResNet18_Test",
     "n_gpu": 1,
 
     "arch": {
@@ -26,7 +26,12 @@
             "amsgrad": true
         }
     },
-    "loss": "cross_entropy_loss",
+    "loss": {
+        "type": "cross_entropy_loss",
+        "args":{
+            "class_weight": true
+        }
+    },
     "metrics": [
         "accuracy", "top_k_acc"
     ],
@@ -38,7 +43,7 @@
         }
     },
     "trainer": {
-        "epochs": 30,
+        "epochs": 2,
 
         "save_dir": "saved/",
         "save_period": 1,
