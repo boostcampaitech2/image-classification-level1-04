@@ -3,6 +3,7 @@ import collections
 import torch
 import numpy as np
 import data_loader.data_loaders as module_data
+import data_loader.transforms as module_trsfm
 import model.loss as module_loss
 import model.metric as module_metric
 import model.model as module_arch
@@ -19,10 +20,12 @@ np.random.seed(SEED)
 
 def main(config):
     logger = config.get_logger('train')
-    # [TODO]setup transforms instances
+    # setup transforms instances
+    trsfm = config.init_ftn('transforms_select', module_trsfm)()
 
     # setup data_loader instances
-    data_loader = config.init_obj('data_loader', module_data)
+    data_loader = config.init_obj('data_loader', module_data,
+                                   trsfm=trsfm)
     valid_data_loader = data_loader.split_validation()
 
     # build model architecture, then print to console
