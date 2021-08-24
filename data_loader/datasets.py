@@ -6,6 +6,8 @@ import pandas as pd
 from torch.utils.data import Dataset
 import torch
 import numpy as np
+from sklearn.utils import class_weight
+
 class MaskDataset(Dataset):
     """
     dir_path: "../input/data/train"
@@ -17,7 +19,7 @@ class MaskDataset(Dataset):
         self.dir_path = os.path.dirname(csv_path)
         self.csv_path = csv_path
         self.img_dir_path = os.path.join(self.dir_path, 'images')
-        self.trans_csv_path = os.path.join(self.dir_path, 'trainV4.csv')
+        self.trans_csv_path = os.path.join(self.dir_path, 'trans_train.csv')
 
         # if preprocessed trainV4.csv file doesnt' exists,
         # preprocess train.csv -> trainV4.csv
@@ -27,6 +29,7 @@ class MaskDataset(Dataset):
             self._makeCSV()
 
         self.df = pd.read_csv(self.trans_csv_path).values
+        self.class_weights = self._get_class_weight()
 
     def __len__(self):
         return len(self.df)
@@ -42,7 +45,7 @@ class MaskDataset(Dataset):
             image = transformed['image']
         return image, torch.tensor(label)
 
-    def _makeCSV(self) :
+    def _makeCSV(self):
         df = pd.read_csv(self.csv_path)
         with open(self.trans_csv_path, 'wt', newline='') as csvfile:
             maskwriter = csv.writer(csvfile)
@@ -59,11 +62,17 @@ class MaskDataset(Dataset):
                         label+=12
                     if data["gender"] =="female":
                         label+=3
-                    if data["age"] > 60 :
+                    if data["age"] >= 60 :
                         label+=2
-                    elif data["age"] >=30:
+                    elif data["age"] >=30 and data["age"] < 60:
                         label+=1                
                     maskwriter.writerow([data["gender"], data["race"], data["age"], img_path, label])
+
+    def _get_class_weight(self):
+        class_weights = dict(enumerate(class_weight.compute_class_weight('balanced',
+                            classes=np.sort(np.unique(self.df[:, -1])), # label
+                            y=self.df[:, -1])))
+        return torch.tensor(list(class_weights.values()), dtype=torch.float)
 
 class MaskSubmitDataset(Dataset):
     """
