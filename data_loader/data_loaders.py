@@ -16,7 +16,15 @@ class MaskDataLoader(BaseDataLoader):
         self.data_dir = data_dir
         self.train_dir = os.path.join(self.data_dir, 'train')
         self.eval_dir = os.path.join(self.data_dir, 'eval')
-        
+        if trsfm is True :
+            trsfm = A.Compose([
+                
+                A.HueSaturationValue(),
+                A.HorizontalFlip(p=1),
+                A.Normalize(mean=[0.485, 0.456, 0.406],
+                                      std=[0.229, 0.224, 0.225]),
+                ToTensorV2(),
+            ])
         if not trsfm or not training or submit:
             trsfm = A.Compose([
                 A.HueSaturationValue(),
@@ -35,10 +43,10 @@ class MaskDataLoader(BaseDataLoader):
                             csv_path=os.path.join(self.train_dir, 'train.csv'),
                             transform=trsfm)
         else:
-            trsfm = A.compose([
+            trsfm = A.Compose([
                 A.HueSaturationValue(),
                 A.HorizontalFlip(p=1),
-                A.Resize((512, 384)),
+                A.Resize(512, 384),
                 # Modify this value by what pretrained model you use
                 # ref: https://pytorch.org/vision/stable/models.html
                 A.Normalize(mean=[0.485, 0.456, 0.406],
