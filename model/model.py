@@ -83,7 +83,6 @@ class PretrainModelTimm(nn.Module):
     timm pretrained model format
     https://fastai.github.io/timmdocs/
     """
-<<<<<<< HEAD
     def __init__(self, model_name='efficientnetv2_rw_s', num_classes=18):
         super().__init__()
         self.num_classes = num_classes
@@ -92,13 +91,3 @@ class PretrainModelTimm(nn.Module):
 
     def forward(self, x):
         return self.model(x)
-=======
-    def __init__(self, model_name='efficientnet_b3', num_classes=18):
-        super().__init__()
-        self.num_classes = num_classes
-        self.model = timm.create_model(model_name, pretrained=True)
-        self.model.fc = torch.nn.Linear(in_features=512, out_features=self.num_classes, bias=True)
-
-    def forward(self, x):
-        return self.model(x)
->>>>>>> main
