@@ -29,18 +29,16 @@ class MaskModel(nn.Module):
         x = self.fc3(x)
         return x
 
-
 class PretrainModelTV(nn.Module):
     """
     torch vision pretrain model format
     https://pytorch.org/vision/stable/models.html
     """
     def __init__(self, model_name='resnet18',num_classes=18):
-
         super().__init__()
         self.num_classes = num_classes
         self.model = getattr(torchvision.models, model_name)(pretrained=True)
-        print("네트워크 출력 채널 개수 (예측 class type 개수)", self.model.fc.weight.shape[0])
+        print("the number of class labels :", self.model.fc.weight.shape[0])
         self.model.fc = torch.nn.Linear(in_features=512,
                                             out_features=self.num_classes, bias=True)
         
@@ -51,19 +49,24 @@ class PretrainModelTV(nn.Module):
 
     def forward(self, x):
         return self.model(x)
+
 class EfficientNet_b0(nn.Module):
-    def __init__(self):
+    """
+    batch size 64
+    """
+    def __init__(self, model_name='efficientnet-b0',num_classes=18):
         super(EfficientNet_b0, self).__init__()
-        self.model = EfficientNet.from_pretrained('efficientnet-b0')
+        self.num_classes = num_classes
+        self.model = EfficientNet.from_pretrained(model_name)
 
         self.classifier_layer = nn.Sequential(
             nn.Linear(1280 , 512),
             nn.BatchNorm1d(512),
             nn.Dropout(0.2),
             nn.Linear(512 , 256),
-            nn.Linear(256 , 18)
+            nn.Linear(256 , self.num_classes)
         )
-        
+
     def forward(self, inputs):
         x = self.model.extract_features(inputs)
 
@@ -80,6 +83,7 @@ class PretrainModelTimm(nn.Module):
     timm pretrained model format
     https://fastai.github.io/timmdocs/
     """
+<<<<<<< HEAD
     def __init__(self, model_name='efficientnetv2_rw_s', num_classes=18):
         super().__init__()
         self.num_classes = num_classes
@@ -88,3 +92,13 @@ class PretrainModelTimm(nn.Module):
 
     def forward(self, x):
         return self.model(x)
+=======
+    def __init__(self, model_name='efficientnet_b3', num_classes=18):
+        super().__init__()
+        self.num_classes = num_classes
+        self.model = timm.create_model(model_name, pretrained=True)
+        self.model.fc = torch.nn.Linear(in_features=512, out_features=self.num_classes, bias=True)
+
+    def forward(self, x):
+        return self.model(x)
+>>>>>>> main

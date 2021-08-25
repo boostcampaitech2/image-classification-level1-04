@@ -103,8 +103,10 @@ class ConfigParser:
         """
         module_name = self[name]['type']
         module_args = dict(self[name]['args'])
-        assert all([k not in module_args for k in kwargs]), 'Overwriting kwargs given in config file is not allowed'
+        assert all([k not in module_args for k in kwargs if k != 'class_weight']), 'Overwriting kwargs given in config file is not allowed(except "class_weight"'
         module_args.update(kwargs)
+        if 'class_weight' in module_args:
+            del(module_args['class_weight'])
         return partial(getattr(module, module_name), *args, **module_args)
 
     def __getitem__(self, name):
