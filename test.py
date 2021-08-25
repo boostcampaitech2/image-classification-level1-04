@@ -37,7 +37,9 @@ def main(config):
     model = model.to(device)
     model.eval()
 
-    all_predictions = []
+    total_loss = 0.0
+    total_metrics = torch.zeros(len(metric_fns)).to(device)
+
     with torch.no_grad():
         for data in tqdm(data_loader):
             data = data.to(device)
