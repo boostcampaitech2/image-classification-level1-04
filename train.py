@@ -29,7 +29,7 @@ def main(config):
     valid_data_loader = data_loader.split_validation()
 
     # build model architecture, then print to console
-    model = config.init_obj('arch', module_arch)
+    model = config.init_obj('arch', module_arch) 
     logger.info(model) 
 
     # prepare for (multi-device) GPU training
