@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 import numpy as np
-
+import timm
 from base import BaseModel
 from efficientnet_pytorch import EfficientNet
 
@@ -73,3 +73,18 @@ class EfficientNet_b0(nn.Module):
         x = self.model._dropout(x)
         x = self.classifier_layer(x)
         return x
+
+class PretrainModelTimm(nn.Module):
+    """
+    batch size : 32
+    timm pretrained model format
+    https://fastai.github.io/timmdocs/
+    """
+    def __init__(self, model_name='efficientnetv2_rw_s', num_classes=18):
+        super().__init__()
+        self.num_classes = num_classes
+        self.model = timm.create_model(model_name, pretrained=True)
+        self.model.fc = torch.nn.Linear(in_features=1000, out_features=self.num_classes, bias=True)
+
+    def forward(self, x):
+        return self.model(x)
