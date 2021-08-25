@@ -1,11 +1,19 @@
 {
-    "name": "PretrainResNet18_Test",
+    "name": "PURE_efficientnet_b3",
     "n_gpu": 1,
 
     "arch": {
         "type": "PretrainModelTimm",
         "args": {}
     },
+
+    "transforms_select": {
+        "type": "transforms_select",
+        "args": {
+            "method": "DEFAULT"
+        }
+    },
+
     "data_loader": {
         "type": "MaskDataLoader",
         "args":{
@@ -13,15 +21,14 @@
             "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.1,
-            "num_workers": 1,
-            "trsfm": true,
+            "num_workers": 2,
             "submit": false
         }
     },
     "optimizer": {
         "type": "Adam",
         "args":{
-            "lr": 0.001,
+            "lr": 2e-5,
             "weight_decay": 0,
             "amsgrad": true
         }
@@ -33,17 +40,17 @@
         }
     },
     "metrics": [
-        "accuracy", "top_k_acc"
+        "accuracy", "top_k_acc", "f1"
     ],
     "lr_scheduler": {
         "type": "StepLR",
         "args": {
-            "step_size": 50,
+            "step_size": 740,
             "gamma": 0.1
         }
     },
     "trainer": {
-        "epochs":10,
+        "epochs": 3,
 
         "save_dir": "saved/",
         "save_period": 1,

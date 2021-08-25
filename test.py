@@ -1,9 +1,8 @@
+import os
 import argparse
 import torch
 from tqdm import tqdm
 import data_loader.data_loaders as module_data
-import model.loss as module_loss
-import model.metric as module_metric
 import model.model as module_arch
 from parse_config import ConfigParser
 
@@ -14,20 +13,17 @@ def main(config):
     # setup data_loader instances
     data_loader = getattr(module_data, config['data_loader']['type'])(
         config['data_loader']['args']['data_dir'],
-        batch_size=512,
+        batch_size=32,
         shuffle=False,
         validation_split=0.0,
         training=False,
-        num_workers=2
+        num_workers=1,
+        submit=True
     )
 
     # build model architecture
     model = config.init_obj('arch', module_arch)
     logger.info(model)
-
-    # get function handles of loss and metrics
-    loss_fn = getattr(module_loss, config['loss']['type'])
-    metric_fns = [getattr(module_metric, met) for met in config['metrics']]
 
     logger.info('Loading checkpoint: {} ...'.format(config.resume))
     checkpoint = torch.load(config.resume)
@@ -41,32 +37,21 @@ def main(config):
     model = model.to(device)
     model.eval()
 
-    total_loss = 0.0
-    total_metrics = torch.zeros(len(metric_fns))
-
+    all_predictions = []
     with torch.no_grad():
-        for i, (data, target) in enumerate(tqdm(data_loader)):
-            data, target = data.to(device), target.to(device)
-            output = model(data)
-
-            #
-            # save sample images, or do something with output here
-            #
-
-            # computing loss, metrics on test set
-            loss = loss_fn(output, target)
-            batch_size = data.shape[0]
-            total_loss += loss.item() * batch_size
-            for i, metric in enumerate(metric_fns):
-                total_metrics[i] += metric(output, target) * batch_size
-
-    n_samples = len(data_loader.sampler)
-    log = {'loss': total_loss / n_samples}
-    log.update({
-        met.__name__: total_metrics[i].item() / n_samples for i, met in enumerate(metric_fns)
-    })
-    logger.info(log)
-
+        for data in tqdm(data_loader):
+            data = data.to(device)
+            pred = model(data)
+            pred = pred.argmax(dim=-1)
+            all_predictions.extend(pred.cpu().numpy())
+    
+    df_submission = data_loader.dataset.df
+    df_submission['ans'] = all_predictions
+    save_name = '_'.join(str(config.resume).split(os.sep)[2:])
+    save_path = os.path.join(data_loader.dataset.test_dir_path, f'submission_{save_name}.csv')
+    df_submission.to_csv(save_path, index=False)
+    print(f'test inference is saved at {save_path}!')
+    print('test inference is done!')
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser(description='PyTorch Template')
