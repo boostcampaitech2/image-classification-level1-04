@@ -1,7 +1,10 @@
 import os
 from .datasets import MaskDataset, MaskSubmitDataset
-from torchvision import transforms
+from .transforms import transforms_select
+
 from base import BaseDataLoader
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
 
 class MaskDataLoader(BaseDataLoader):
     """
@@ -10,33 +13,32 @@ class MaskDataLoader(BaseDataLoader):
     """
     def __init__(self, data_dir, batch_size, shuffle=True,
                 validation_split=0.0, num_workers=1,
-                training=True, trsfm=False, submit=False):
+                training=True, trsfm=None, submit=False):
         self.data_dir = data_dir
         self.train_dir = os.path.join(self.data_dir, 'train')
         self.eval_dir = os.path.join(self.data_dir, 'eval')
         
-        if not trsfm or not training or submit:
-            trsfm = transforms.Compose([
-                transforms.ToTensor(),
-                # Modify this value by what pretrained model you use
-                # ref: https://pytorch.org/vision/stable/models.html
-                transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                      std=[0.229, 0.224, 0.225])
-            ])
+        if not training or submit or trsfm is None:
+            print('Use DEFALUT transforms...')
+            trsfm = transforms_select(method='DEFAULT')
         
         if not submit:
+            # Set up transforms for training
             self.shuffle = shuffle
             self.dataset = MaskDataset(
                             csv_path=os.path.join(self.train_dir, 'train.csv'),
                             transform=trsfm)
+      
         else:
-            trsfm = transforms.Compose([
-                transforms.Resize((512, 384)),
-                transforms.ToTensor(),
+            # When you submit, transforms should be default setting
+            trsfm = A.Compose([
+                A.Resize(512, 384),
                 # Modify this value by what pretrained model you use
                 # ref: https://pytorch.org/vision/stable/models.html
-                transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                      std=[0.229, 0.224, 0.225])
+                A.Normalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225]),
+                ToTensorV2(),
+
             ])
             self.shuffle = False
             self.dataset = MaskSubmitDataset(transform=trsfm)

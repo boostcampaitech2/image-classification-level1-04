@@ -38,8 +38,11 @@ class MaskDataset(Dataset):
         sample = self.df[index]
         label = sample[-1]
         image = PIL.Image.open(sample[-2])
+        image = np.array(image.convert("RGB"))
         if self.transform is not None:
-            image = self.transform(image)
+            #image = self.transform(image)
+            transformed = self.transform(image=image)
+            image = transformed['image']
         return image, torch.tensor(label)
 
     def _makeCSV(self):
@@ -91,7 +94,10 @@ class MaskSubmitDataset(Dataset):
     
     def __getitem__(self, index):
         image = PIL.Image.open(self.img_paths[index])
+        image = np.array(image.convert("RGB"))
 
-        if self.transform:
-            image = self.transform(image)
+        if self.transform is not None:
+            #image = self.transform(image)
+            transformed = self.transform(image=image)
+            image = transformed['image']
         return image
