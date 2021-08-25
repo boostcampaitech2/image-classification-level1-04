@@ -126,7 +126,7 @@ class PretrainModelTimmViT(nn.Module):
     timm pretrained model format
     https://fastai.github.io/timmdocs/
     """
-    def __init__(self, model_name="vit_large_r50_s32_384", num_classes=18):
+    def __init__(self, model_name="vit_large_patch16_384", num_classes=18):
         super().__init__()
         self.num_classes = num_classes
         self.model = timm.create_model(model_name, pretrained=True)

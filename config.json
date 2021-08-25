@@ -1,9 +1,9 @@
 {
-    "name": "PretrainModelTimmEcaNFNet10_Baseline",
+    "name": "PretrainModelTimm_ViT",
     "n_gpu": 1,
 
     "arch": {
-        "type": "PretrainModelTimmEcaNFNet10",
+        "type": "PretrainModelTimmViT",
         "args": {}
     },
 
@@ -18,7 +18,7 @@
         "type": "MaskDataLoader",
         "args":{
             "data_dir": "../input/data",
-            "batch_size": 64,
+            "batch_size": 12,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2,
@@ -45,7 +45,7 @@
     "lr_scheduler": {
         "type": "StepLR",
         "args": {
-            "step_size": 740,
+            "step_size": 50,
             "gamma": 0.1
         }
     },

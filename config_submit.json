@@ -1,9 +1,9 @@
 {
-    "name": "PretrainModelTimmEcaNFNet10_Baseline",
+    "name": "PretrainModelTimm_ViT",
     "n_gpu": 1,
 
     "arch": {
-        "type": "PretrainModelTimmEcaNFNet10",
+        "type": "PretrainModelTimmViT",
         "args": {}
     },
 
@@ -18,11 +18,11 @@
         "type": "MaskDataLoader",
         "args":{
             "data_dir": "../input/data",
-            "batch_size": 128,
+            "batch_size": 12,
             "shuffle": false,
             "validation_split": 0.0,
             "num_workers": 2,
-            "submit": false
+            "submit": true
         }
     },
     "optimizer": {
@@ -45,7 +45,7 @@
         }
     },
     "trainer": {
-        "epochs": 30,
+        "epochs": 20,
 
         "save_dir": "saved/",
         "save_period": 1,
