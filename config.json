@@ -1,20 +1,20 @@
 {
-    "name": "PretrainResNet18",
+    "name": "efficientnetv2_rw_s",
     "n_gpu": 1,
 
     "arch": {
-        "type": "EfficientNet_b0",
+        "type": "PretrainModelTimm",
         "args": {}
     },
     "data_loader": {
         "type": "MaskDataLoader",
         "args":{
             "data_dir": "../input/data",
-            "batch_size": 64,
+            "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 1,
-            "trsfm": false,
+            "trsfm": true,
             "submit": false
         }
     },
@@ -38,7 +38,7 @@
         }
     },
     "trainer": {
-        "epochs": 10,
+        "epochs":10,
 
         "save_dir": "saved/",
         "save_period": 1,
