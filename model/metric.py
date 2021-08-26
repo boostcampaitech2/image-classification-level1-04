@@ -1,5 +1,5 @@
 import torch
-
+from torchmetrics.functional import f1 as _f1
 
 def accuracy(output, target):
     with torch.no_grad():
@@ -18,3 +18,6 @@ def top_k_acc(output, target, k=3):
         for i in range(k):
             correct += torch.sum(pred[:, i] == target).item()
     return correct / len(target)
+
+def f1(output, target, num_classes=3):
+    return _f1(output, target, num_classes=num_classes, average='macro')
