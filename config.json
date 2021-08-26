@@ -1,9 +1,9 @@
 {
-    "name": "PretrainModelTimmEcaNFNet10_Baseline",
+    "name": "PretrainModelTimmEcaNFNet12_Baseline",
     "n_gpu": 1,
 
     "arch": {
-        "type": "PretrainModelTimmEcaNFNet10",
+        "type": "PretrainModelTimmEcaNFNet12",
         "args": {}
     },
 
@@ -18,7 +18,7 @@
         "type": "MaskDataLoader",
         "args":{
             "data_dir": "../input/data",
-            "batch_size": 64,
+            "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2,
