@@ -14,25 +14,28 @@ Level 1 P-Stage Image Classification Project Repository
 
 ## Folder Structure
   ```
+  input/data/
+  │        ├──train/...
+  │        └──eval/...
   image-classification-level1-04/
   │
   ├── train.py - main script to start training
   ├── test.py - evaluation of trained model
   │
   ├── config.json - holds configuration for training
+  ├── config_submit.json - holds configuration for submit
+  │
   ├── parse_config.py - class to handle config file and cli options
-  │
-  ├── new_project.py - initialize new project with template files
-  │
+  │  
   ├── base/ - abstract base classes
   │   ├── base_data_loader.py
   │   ├── base_model.py
   │   └── base_trainer.py
   │
   ├── data_loader/ - anything about data loading goes here
-  │   └── data_loaders.py
-  │
-  ├── data/ - default directory for storing input data
+  │   ├── data_loader.py
+  │   ├── datasets.py
+  │   └── transforms.py
   │
   ├── model/ - models, losses, and metrics
   │   ├── model.py
@@ -57,27 +60,32 @@ Level 1 P-Stage Image Classification Project Repository
   ```
 
 ## Usage
-The code in this repo is an CIFAR10 example of the template.
 Try `python train.py -c config.json` to run code.
 
 ### Config file format
 Config files are in `.json` format:
 ```javascript
 {
-  "name": "PretrainResNet18_Test",        // training session name
-  "n_gpu": 1,                             // number of GPUs to use for training.
+  "name": "PretrainResNet18_Test",      // training session name
+  "n_gpu": 1,                           // number of GPUs to use for training.
   
   "arch": {
-    "type": "PretrainModelTV",       // name of model architecture to train
-    "args": {
-
-    }                
+    "type": "PretrainModelTV",          // name of model architecture to train
+    "args": {}                
   },
+
+  "transforms_select": {
+      "type": "transforms_select",      // seleecting transforms methods
+      "args": {
+          "method": "DEFAULT"
+      }
+  },
+    
   "data_loader": {
-    "type": "MaskDataLoader",         // selecting data loader
+    "type": "MaskDataLoader",          // selecting data loader
     "args":{
-      "data_dir": "../input/data",    // dataset path
-      "batch_size": 128,                // batch size
+      "data_dir": "../input/data",     // dataset path
+      "batch_size": 128,               // batch size
       "shuffle": true,                 // shuffle training data before splitting
       "validation_split": 0.1          // size of validation dataset. float(portion) or int(number of samples)
       "num_workers": 2,                // number of cpu processes to be used for data loading
@@ -136,6 +144,14 @@ Modify the configurations in `.json` config files, then run:
 You can resume from a previously saved checkpoint by:
 
   ```
+  python train.py --resume (e.g. saved/models/[confg.name]/[MMDD_Hashvalue]/checkpoint-epoch#.pth)
+  ```
+  
+
+### Resuming from checkpoints
+You can resume from a previously saved checkpoint by:
+
+  ```
   python train.py --resume path/to/checkpoint(e.g. saved/models/[confg.name]/[MMDD_Hashvalue]/checkpoint-epoch#.pth)
   ```
 
@@ -165,10 +181,9 @@ which is increased to 256 by command line options.
 
 ## TODOs
 
-- [ ] Add transforms feature(or Albumentation)
+- [x] Add transforms feature(or Albumentation)
 - [ ] `Weights & Biases` logger support
-- [*] Add pretrained model(e.g. , EfficientNet, ...)
-- [ ] Add Raytune Module
+- [x] Add pretrained model(e.g. , EfficientNet, ...)
 
 ## License
 This project is licensed under the MIT License. See  LICENSE for more details

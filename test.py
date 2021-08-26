@@ -14,11 +14,11 @@ def main(config):
     # setup data_loader instances
     data_loader = getattr(module_data, config['data_loader']['type'])(
         config['data_loader']['args']['data_dir'],
-        batch_size=512,
+        batch_size=32,
         shuffle=False,
         validation_split=0.0,
         training=False,
-        num_workers=2
+        num_workers=1
     )
 
     # build model architecture
@@ -42,7 +42,7 @@ def main(config):
     model.eval()
 
     total_loss = 0.0
-    total_metrics = torch.zeros(len(metric_fns))
+    total_metrics = torch.zeros(len(metric_fns)).to(device)
 
     with torch.no_grad():
         for i, (data, target) in enumerate(tqdm(data_loader)):
