@@ -15,6 +15,7 @@ class Trainer(BaseTrainer):
         self.config = config
         self.device = device
         self.data_loader = data_loader
+        self.cutMix = cutMix
         if len_epoch is None:
             # epoch-based training
             self.len_epoch = len(self.data_loader)
@@ -28,8 +29,7 @@ class Trainer(BaseTrainer):
         self.log_step = int(np.sqrt(data_loader.batch_size))
 
         self.train_metrics = MetricTracker('loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
-        self.valid_metrics = MetricTracker('loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
-
+        self.valid_metrics = MetricTracker('loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)    
     def _train_epoch(self, epoch):
         """
         Training logic for an epoch
@@ -40,7 +40,7 @@ class Trainer(BaseTrainer):
         self.model.train()
         self.train_metrics.reset()
         for batch_idx, (data, target) in enumerate(self.data_loader):
-            data, target = data.to(self.device), target.to(self.device)
+            data, target = data["image"].to(self.device), target.to(self.device)
 
             self.optimizer.zero_grad()
             output = self.model(data)
