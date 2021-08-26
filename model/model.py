@@ -49,25 +49,26 @@ class PretrainModelTV(nn.Module):
 
     def forward(self, x):
         return self.model(x)
-
+        
 class EFNetB7(nn.Module):
     '''reference by : https://github.com/lukemelas/EfficientNet-PyTorch'''
     def __init__(self, model_name='efficientnet-b7', num_classes=3):
         super().__init__()
         self.num_classes = num_classes
-        self.mode_name = model_name
-        self.model = EfficientNet.from_pretrained('efficientnet-b7')
+        self.mode_name = model_name        
         image_size = EfficientNet.get_image_size(model_name)        
         self.model= EfficientNet.from_pretrained(model_name, num_classes=self.num_classes)
         self.freeze_fc()
-
     def forward(self, x):
         return self.model(x)
-
     def freeze_fc(self):
         for n, p in self.model.named_parameters():
             if '_fc' not in n:
                 p.requires_grad = False        
+  
+
+
+
 class EfficientNet_b0(nn.Module):
     """
     batch size 64

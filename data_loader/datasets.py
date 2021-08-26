@@ -7,6 +7,7 @@ from torch.utils.data import Dataset
 import torch
 import numpy as np
 from sklearn.utils import class_weight
+import cv2
 
 class MaskDataset(Dataset):
     """
@@ -108,7 +109,6 @@ class DatasetForMask(Dataset):
         self.csv_path = csv_path
         self.img_dir_path = os.path.join(self.dir_path, 'images')
         self.trans_csv_path = os.path.join(self.dir_path, 'train_for_Mask.csv')
-
         # if preprocessed trainV4.csv file doesnt' exists,
         # preprocess train.csv -> trainV4.csv
         if os.path.exists(self.trans_csv_path):
@@ -121,7 +121,10 @@ class DatasetForMask(Dataset):
 
     def __len__(self):
         return len(self.df)
-
+        
+    def get_labels(self):
+        return self.df[:, -1]
+        
     def __getitem__(self, index):
         sample = self.df[index]
         label = sample[-1]
@@ -130,10 +133,11 @@ class DatasetForMask(Dataset):
         for extension in img_extension :
             if os.path.exists(no_extension+'.'+extension) :        
                 image_path = no_extension+'.'+extension                
-                break        
-        image = PIL.Image.open(image_path) 
+                break    
+        image = cv2.imread(image_path)
+        #image = PIL.Image.open(image_path) 
         if self.transform is not None:
-            image = self.transform(image)
+            image = self.transform(image=image)
         return image, torch.tensor(label)  
 
     def _get_class_weight(self):

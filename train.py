@@ -9,6 +9,7 @@ import model.model as module_arch
 from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device
+from data_loader.data_loaders import DataLoaderForMask
 
 
 # fix random seeds for reproducibility
@@ -19,11 +20,11 @@ torch.backends.cudnn.benchmark = False
 np.random.seed(SEED)
 
 def main(config):
-    logger = config.get_logger('train')
+    logger = config.get_logger('train') 
     # [TODO]setup transforms instances
 
     # setup data_loader instances
-    data_loader = config.init_obj('data_loader', module_data)
+    data_loader = DataLoaderForMask(data_dir="../input/data", batch_size=16)
     valid_data_loader = data_loader.split_validation()
 
     # build model architecture, then print to console

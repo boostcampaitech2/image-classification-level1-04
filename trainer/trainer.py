@@ -15,7 +15,6 @@ class Trainer(BaseTrainer):
         self.config = config
         self.device = device
         self.data_loader = data_loader
-        self.cutMix = cutMix
         if len_epoch is None:
             # epoch-based training
             self.len_epoch = len(self.data_loader)

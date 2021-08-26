@@ -4,6 +4,7 @@ import numpy as np
 from albumentations.core.transforms_interface import ImageOnlyTransform
 from data_loader.data_loaders import DataLoaderForMask
 import albumentations as A
+
 class AugMix(ImageOnlyTransform):
     """Augmentations mix to Improve Robustness and Uncertainty.
     Args:
@@ -56,15 +57,15 @@ class AugMix(ImageOnlyTransform):
 
 augs = [A.HorizontalFlip(always_apply=True),
         A.Blur(always_apply=True),
-        A.OneOf(
-        [A.ShiftScaleRotate(always_apply=True),
+        A.OneOf([A.ShiftScaleRotate(always_apply=True),
         A.GaussNoise(always_apply=True)]
-        ),
-        A.Cutout(always_apply=True),
+        ),        
         A.PiecewiseAffine(always_apply=True)]
 
 transforms_train = A.Compose([
-    AugMix(width=3, depth=2, alpha=.2, p=1., augmentations=augs),
+    A.CenterCrop(400, 260),
+    AugMix(width=3, depth=2, alpha=.2, p=1., augmentations=augs),    
+    A.pytorch.transforms.ToTensorV2(),
 ])
 trsfm = A.Compose([                
                 # Modify this value by what pretrained model you use
@@ -79,8 +80,7 @@ trsfm = A.Compose([
                 p=1.0),
                 ])        
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    
+    import matplotlib.pyplot as plt    
     dataLoader = DataLoaderForMask(data_dir="../input/data", batch_size=16, trsfm=transforms_train)
     images, labels = next(iter(dataLoader))
     plt.figure(figsize=(12,12))
@@ -88,7 +88,8 @@ if __name__ == '__main__':
         plt.subplot(4,4,n)        
         #image = cv2.Sobel(np.array(image),-1,0,1, ksize=3)
         #image = cv2.Scharr(np.array(image),-1,0,1)
-        #image = cv2.Laplacian(np.array(image), -1)
+        #image = cv2.Laplacian(np.array(image), -1)        
+        image=image.permute(1, 2, 0)
         plt.imshow(image)
         plt.title("{}".format(label))
         plt.axis('off')
