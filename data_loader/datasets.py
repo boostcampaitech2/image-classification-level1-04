@@ -19,10 +19,13 @@ class MaskDataset(Dataset):
         self.dir_path = os.path.dirname(csv_path)
         self.csv_path = csv_path
         self.img_dir_path = os.path.join(self.dir_path, 'images')
-        self.trans_csv_path = os.path.join(self.dir_path, 'trans_train.csv')
-
-        # if preprocessed trainV4.csv file doesnt' exists,
-        # preprocess train.csv -> trainV4.csv
+        self.trans_csv_path = os.path.join(self.dir_path, 'trans_train_v4.csv')
+        # See EDA/FixNote_Labeling_error.ipynb
+        self.incorrect_labels = {'error_in_female' : ['006359', '006360', '006361', '006362', '006363', '006364'],
+                                'error_in_male' : ['001498-1', '004432'],
+                                'swap_normal_incorrect' : ['000020', '004418', '005227']}
+        # if preprocessed trans_train_v4.csv file doesnt' exists,
+        # preprocess train.csv -> trans_train_v4.csv
         if os.path.exists(self.trans_csv_path):
             pass
         else:
@@ -55,17 +58,32 @@ class MaskDataset(Dataset):
 
                 img_path_base = os.path.join(os.path.join(self.img_dir_path, data['path']), '*')
                 for img_path in glob.glob(img_path_base):
+                    # labeling
                     label = 0
-                    if "incorrect" in img_path :
+                    if "incorrect" in img_path:
                         label+=6
-                    elif "normal" in img_path :
+                    elif "normal" in img_path:
                         label+=12
                     if data["gender"] =="female":
                         label+=3
                     if data["age"] >= 60 :
                         label+=2
                     elif data["age"] >=30 and data["age"] < 60:
-                        label+=1                
+                        label+=1          
+                    
+                    # incorrect label fix
+                    ## 1. female -> male
+                    if data['id'] in self.incorrect_labels['error_in_female']:
+                        label-=3
+                    ## 2. male -> female
+                    if data['id'] in self.incorrect_labels['error_in_male']:
+                        label+=3
+                    ## 3. mask <-> incorrect
+                    if "incorrect" in img_path and data['id'] in self.incorrect_labels['swap_normal_incorrect']:
+                        label+=6
+                    if "normal" in img_path and data['id'] in self.incorrect_labels['swap_normal_incorrect']:
+                        label-=6
+
                     maskwriter.writerow([data["gender"], data["race"], data["age"], img_path, label])
 
     def _get_class_weight(self):
