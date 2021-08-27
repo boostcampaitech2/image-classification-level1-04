@@ -4,7 +4,6 @@ import torch.nn.functional as F
 import torchvision
 import numpy as np
 import timm
-
 from base import BaseModel
 from efficientnet_pytorch import EfficientNet
 
@@ -88,38 +87,15 @@ class PretrainModelTimm(nn.Module):
         super().__init__()
         self.num_classes = num_classes
         self.model = timm.create_model(model_name, pretrained=True)
-        self.model.fc = torch.nn.Linear(in_features=512, out_features=self.num_classes, bias=True)
-        
-        n_features = self.model.head.fc.in_features
-        self.model.head.fc = torch.nn.Linear(in_features=n_features, out_features=self.num_classes, bias=True)
+        n_features = self.model.classifier.in_features
+        self.model.classifier = torch.nn.Linear(in_features=n_features, out_features=self.num_classes, bias=True)
 
-        torch.nn.init.xavier_uniform_(self.model.head.fc.weight)
+        torch.nn.init.xavier_uniform_(self.model.classifier.weight)
         stdv = 1/np.sqrt(self.num_classes)
-        self.model.head.fc.bias.data.uniform_(-stdv, stdv)
+        self.model.classifier.bias.data.uniform_(-stdv, stdv)
 
     def forward(self, x):
         return self.model(x)
-
-class PretrainModelTimmEcaNFNet10(nn.Module):
-    """
-    batch size : 32
-    timm pretrained model format
-    https://fastai.github.io/timmdocs/
-    """
-    def __init__(self, model_name="eca_nfnet_l0", num_classes=18):
-        super().__init__()
-        self.num_classes = num_classes
-        self.model = timm.create_model(model_name, pretrained=True)
-        n_features = self.model.head.fc.in_features
-        self.model.head.fc = torch.nn.Linear(in_features=n_features, out_features=self.num_classes, bias=True)
-
-        torch.nn.init.xavier_uniform_(self.model.head.fc.weight)
-        stdv = 1/np.sqrt(self.num_classes)
-        self.model.head.fc.bias.data.uniform_(-stdv, stdv)
-
-    def forward(self, x):
-        return self.model(x)
-
 class PretrainModelTimmEcaNFNet12(nn.Module):
     """
     batch size : 32

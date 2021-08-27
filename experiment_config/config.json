@@ -1,19 +1,11 @@
 {
-    "name": "PURE_efficientnet_b3",
+    "name": "resnet51q",
     "n_gpu": 1,
 
     "arch": {
         "type": "PretrainModelTimm",
         "args": {}
     },
-
-    "transforms_select": {
-        "type": "transforms_select",
-        "args": {
-            "method": "DEFAULT"
-        }
-    },
-
     "data_loader": {
         "type": "MaskDataLoader",
         "args":{
@@ -21,36 +13,32 @@
             "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.1,
-            "num_workers": 2,
+            "num_workers": 1,
+            "trsfm": true,
             "submit": false
         }
     },
     "optimizer": {
         "type": "Adam",
         "args":{
-            "lr": 2e-5,
+            "lr": 0.001,
             "weight_decay": 0,
-            "amsgrad": true
+            "amsgrad": true 
         }
     },
-    "loss": {
-        "type": "cross_entropy_loss",
-        "args":{
-            "class_weight": true
-        }
-    },
+    "loss": "cross_entropy_loss",
     "metrics": [
-        "accuracy", "top_k_acc", "f1"
+        "accuracy", "top_k_acc"
     ],
     "lr_scheduler": {
         "type": "StepLR",
         "args": {
-            "step_size": 740,
+            "step_size": 50,
             "gamma": 0.1
         }
     },
     "trainer": {
-        "epochs": 3,
+        "epochs":10,
 
         "save_dir": "saved/",
         "save_period": 1,

@@ -13,11 +13,11 @@ def main(config):
     # setup data_loader instances
     data_loader = getattr(module_data, config['data_loader']['type'])(
         config['data_loader']['args']['data_dir'],
-        batch_size=64,
+        batch_size=32,
         shuffle=False,
         validation_split=0.0,
         training=False,
-        num_workers=3,
+        num_workers=1,
         submit=True
     )
 
@@ -37,7 +37,9 @@ def main(config):
     model = model.to(device)
     model.eval()
 
-    all_predictions = []
+    total_loss = 0.0
+    total_metrics = torch.zeros(len(metric_fns)).to(device)
+
     with torch.no_grad():
         for data in tqdm(data_loader):
             data = data.to(device)
