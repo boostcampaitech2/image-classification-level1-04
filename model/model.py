@@ -119,3 +119,23 @@ class PretrainModelTimmEcaNFNet10(nn.Module):
 
     def forward(self, x):
         return self.model(x)
+
+
+class PretrainedDenseNet_161(nn.Module):
+    """
+    DenseNet121 - classfier -> torch.nn.Linear(in_features=1024, out_features=self.num_classes, bias=True)
+    DenseNet161 - classfier -> torch.nn.Linear(in_features=2208, out_features=self.num_classes, bias=True)
+
+    """
+    def __init__(self, model_name="densenet161", num_classes=18):
+        super().__init__()
+        self.num_classes = num_classes
+        self.model = getattr(torchvision.models, model_name)(pretrained=True)
+        self.model.classifier = torch.nn.Linear(in_features=2208, out_features=self.num_classes, bias=True)
+
+        torch.nn.init.xavier_uniform_(self.model.classifier.weight)
+        stdv = 1/np.sqrt(self.num_classes)
+        self.model.classifier.bias.data.uniform_(-stdv, stdv)
+
+    def forward(self, x):
+        return self.model(x)
