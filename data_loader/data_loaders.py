@@ -29,17 +29,6 @@ class MaskDataLoader(BaseDataLoader):
                             csv_path=os.path.join(self.train_dir, 'train.csv'),
                             transform=trsfm)
         else:
-            # When you submit, transforms should be default setting
-            trsfm = A.Compose([
-                A.Resize(384, 384),
-                # Modify this value by what pretrained model you use
-                # ref: https://pytorch.org/vision/stable/models.html
-                A.Normalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-                ToTensorV2(),
-
-            ])
-            trsfm = transforms_select(method='DEFAULT')
             self.shuffle = False
             self.dataset = MaskSubmitDataset(transform=trsfm)
 
