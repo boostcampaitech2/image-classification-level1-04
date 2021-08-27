@@ -87,7 +87,7 @@ class ConfigParser:
         `object = module.name(a, b=1)`
         """
         module_name = self[name]['type'] # config.json["data_lader"]["type"] = "MaskDataLoader"
-        module_args = dict(self[name]['args'])  
+        module_args = dict(self[name]['args'])
         assert all([k not in module_args for k in kwargs]), 'Overwriting kwargs given in config file is not allowed' 
         # init_obj를 실행할 때 keyword argument를 더 적을 수 있는데 이미 선언된 값들과 일치하면 assert한다(중복 방지)
         module_args.update(kwargs)

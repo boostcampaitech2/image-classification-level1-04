@@ -17,10 +17,9 @@ class MaskDataLoader(BaseDataLoader):
         self.data_dir = data_dir
         self.train_dir = os.path.join(self.data_dir, 'train')
         self.eval_dir = os.path.join(self.data_dir, 'eval')
-        
-        if not training or submit or trsfm is None:
-            print('Use DEFALUT transforms...')
-            trsfm = transforms_select(method='DEFAULT')
+
+        if not trsfm or not training or submit:
+            trsfm = transforms_select(method='DEFAULT') # if you use VIT, use VIT_DEFAULT
         
         if not submit:
             # Set up transforms for training
@@ -28,18 +27,7 @@ class MaskDataLoader(BaseDataLoader):
             self.dataset = MaskDataset(
                             csv_path=os.path.join(self.train_dir, 'train.csv'),
                             transform=trsfm)
-      
         else:
-            # When you submit, transforms should be default setting
-            trsfm = A.Compose([
-                A.Resize(512, 384),
-                # Modify this value by what pretrained model you use
-                # ref: https://pytorch.org/vision/stable/models.html
-                A.Normalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-                ToTensorV2(),
-
-            ])
             self.shuffle = False
             self.dataset = MaskSubmitDataset(transform=trsfm)
 
