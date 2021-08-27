@@ -35,7 +35,7 @@ class MaskDataLoader(BaseDataLoader):
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    dataLoader = MaskDataLoader(data_dir="../input/data", batch_size=16)
+    dataLoader = MaskDataLoader(data_dir="../input/data", batch_size=32)
     images, labels = next(iter(dataLoader))
     plt.figure(figsize=(12,12))
     for n, (image, label) in enumerate(zip(images, labels), start=1):

@@ -1,9 +1,9 @@
 {
-    "name": "PURE_efficientnet_b3",
+    "name": "PretrainedDenseNet_161",
     "n_gpu": 1,
 
     "arch": {
-        "type": "PretrainModelTimm",
+        "type": "PretrainedDenseNet_161",
         "args": {}
     },
 
@@ -21,7 +21,7 @@
             "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.1,
-            "num_workers": 2,
+            "num_workers": 1,
             "submit": false
         }
     },
