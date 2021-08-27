@@ -86,11 +86,14 @@ class ConfigParser:
         is equivalent to
         `object = module.name(a, b=1)`
         """
-        module_name = self[name]['type']
+        module_name = self[name]['type'] # config.json["data_lader"]["type"] = "MaskDataLoader"
         module_args = dict(self[name]['args'])
-        assert all([k not in module_args for k in kwargs]), 'Overwriting kwargs given in config file is not allowed'
+        assert all([k not in module_args for k in kwargs]), 'Overwriting kwargs given in config file is not allowed' 
+        # init_obj를 실행할 때 keyword argument를 더 적을 수 있는데 이미 선언된 값들과 일치하면 assert한다(중복 방지)
         module_args.update(kwargs)
+        # assert error가 되지 않은 keyword argument들을 update를 통해 한번에 module_args라는 dict에 추가한다.
         return getattr(module, module_name)(*args, **module_args)
+        # 매개변수로 받은 module은 module_data를 들어가보면 MaskDataLoader라는 DataLoader가 나오게 된다.
 
     def init_ftn(self, name, module, *args, **kwargs):
         """
