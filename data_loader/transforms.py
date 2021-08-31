@@ -12,7 +12,7 @@ STD_MASK = [0.21817792, 0.23804603, 0.25183411]
 
 def transforms_select(method, MEAN=MEAN_IMAGENET, STD=STD_IMAGENET):
     lib =  {'DEFAULT' : A.Compose([
-                            A.Resize(326, 272),
+                            A.Resize(384, 384),
                             A.Normalize(mean=MEAN,
                                         std=STD),
                             ToTensorV2(),

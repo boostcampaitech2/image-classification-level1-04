@@ -24,8 +24,8 @@ class MaskDataset(Dataset):
             self.transform = transform
         self.dir_path = os.path.dirname(csv_path)
         self.csv_path = csv_path
-        self.img_dir_path = os.path.join(self.dir_path, 'new_images2')
-        self.trans_csv_path = os.path.join(self.dir_path, 'trans_train_facecrop.csv') # origin : 'trans_train.csv'
+        self.img_dir_path = os.path.join(self.dir_path, 'images')
+        self.trans_csv_path = os.path.join(self.dir_path, 'trans_train.csv') # origin : 'trans_train.csv'
         # See EDA/FixNote_Labeling_error.ipynb
         self.incorrect_labels = {'error_in_female' : ['006359', '006360', '006361', '006362', '006363', '006364'],
                                 'error_in_male' : ['001498-1', '004432'],

@@ -1,5 +1,5 @@
 {
-    "name": "CosineAnnealing_FocalLoss_Cutout_Elastic_Transform_efficientnet_b3_Oversample",
+    "name": "EfficientNet_b3_Cutout_Elastic_Transform",
     "n_gpu": 1,
 
     "arch": {
@@ -10,7 +10,7 @@
     "transforms_select": {
         "type": "transforms_select",
         "args": {
-            "method": "TRNS004"
+            "method": "Cutout_Elastic_CLAHE_Transform"
         }
     },
 
@@ -22,14 +22,15 @@
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 8,
-            "submit": false
+            "submit": false,
+            "sampler" : "over"
         }
     },
     "optimizer": {
-        "type": "Adam",
+        "type": "AdamW",
         "args":{
-            "lr": 1e-5,
-            "weight_decay": 0,
+            "lr": 3e-4,
+            "weight_decay": 0.01,
             "amsgrad": true
         }
     },
