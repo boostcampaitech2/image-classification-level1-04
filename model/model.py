@@ -77,6 +77,25 @@ class EfficientNet_b0(nn.Module):
         x = self.classifier_layer(x)
         return x
 
+
+class EfficientNet_b3(nn.Module):
+    """
+    batch size 64
+    """
+    def __init__(self, model_name='efficientnet-b3',num_classes=18):
+        super(EfficientNet_b3, self).__init__()
+        self.num_classes = num_classes
+        self.model = EfficientNet.from_pretrained(model_name)
+        print(self.model)
+        n_features = self.model._fc.in_features
+        self.model._fc = torch.nn.Linear(in_features=n_features, out_features=self.num_classes, bias=True)
+        torch.nn.init.xavier_uniform_(self.model._fc.weight)
+        stdv = 1/np.sqrt(self.num_classes)
+        self.model._fc.bias.data.uniform_(-stdv, stdv)
+
+    def forward(self, inputs):
+        return self.model(inputs)
+        
 class PretrainModelTimm(nn.Module):
     """
     batch size : 32
@@ -96,6 +115,7 @@ class PretrainModelTimm(nn.Module):
 
     def forward(self, x):
         return self.model(x)
+
 class PretrainModelTimmEcaNFNet12(nn.Module):
     """
     batch size : 32

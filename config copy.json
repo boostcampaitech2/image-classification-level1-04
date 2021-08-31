@@ -1,16 +1,16 @@
 {
-    "name": "CosineAnnealing_FocalLoss_Cutout_Elastic_Transform_efficientnet_b3_Oversample",
+    "name": "EfficientNet_b3_Oversample",
     "n_gpu": 1,
 
     "arch": {
-        "type": "PretrainModelTimm",
+        "type": "EfficientNet_b3",
         "args": {}
     },
 
     "transforms_select": {
         "type": "transforms_select",
         "args": {
-            "method": "TRNS004"
+            "method": "Cutout_Elastic_CLAHE_Transform"
         }
     },
 
@@ -21,8 +21,9 @@
             "batch_size": 32,
             "shuffle": true,
             "validation_split": 0.1,
-            "num_workers": 8,
-            "submit": false
+            "num_workers": 2,
+            "submit": false,
+            "sampler": "over"
         }
     },
     "optimizer": {
@@ -34,7 +35,7 @@
         }
     },
     "loss": {
-        "type": "FocalLoss",
+        "type": "cross_entropy_loss",
         "args":{
             "class_weight": true
         }
@@ -43,29 +44,29 @@
         "accuracy", "top_k_acc", "f1"
     ],
     "lr_scheduler": {
-        "type": "CosineAnnealingLR",
+        "type": "StepLR",
         "args": {
-            "T_max":50, 
-            "eta_min":0
+            "step_size": 740,
+            "gamma": 0.1
         }
     },
     "trainer": {
-        "epochs": 30,
+        "epochs": 10,
 
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
         
         "monitor": "min val_loss",
-        "early_stop": 5,
+        "early_stop": 10,
 
-        "tensorboard": true
+        "tensorboard": false
     },
     "wandb": {
         "use": true,
         "args": {
         "project": "basic",
-        "entity": "boostcamp-level01-04"
+        "entity": "boostcamp01-04"
         }
     }
 }

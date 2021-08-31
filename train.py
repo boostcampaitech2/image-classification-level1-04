@@ -10,6 +10,7 @@ import model.model as module_arch
 from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device
+import wandb
 
 # fix random seeds for reproducibility
 SEED = 123
@@ -19,44 +20,56 @@ torch.backends.cudnn.benchmark = False
 np.random.seed(SEED)
 
 def main(config):
-    logger = config.get_logger('train')
-    # setup transforms instances
-    trsfm = config.init_ftn('transforms_select', module_trsfm)()
 
-    # setup data_loader instances
-    data_loader = config.init_obj('data_loader', module_data,
-                                   trsfm=trsfm)
-    valid_data_loader = data_loader.split_validation()
+    def _main(config):
+        logger = config.get_logger('train')
+        # setup transforms instances
+        trsfm = config.init_ftn('transforms_select', module_trsfm)()
 
-    # build model architecture, then print to console
-    model = config.init_obj('arch', module_arch)
-    logger.info(model)
+        # setup data_loader instances
+        data_loader = config.init_obj('data_loader', module_data,
+                                    trsfm=trsfm)
 
-    # prepare for (multi-device) GPU training
-    device, device_ids = prepare_device(config['n_gpu'])
-    model = model.to(device)
-    if len(device_ids) > 1:
-        model = torch.nn.DataParallel(model, device_ids=device_ids)
+        train_data_loader, valid_data_loader, _ = data_loader.split_validation()
 
-    # get function handles of loss and metrics
-    weight = data_loader.dataset.class_weights.to(device) if config['loss']['args']['class_weight'] else None
-    criterion = config.init_ftn('loss', module_loss, weight=weight)
-    # criterion = getattr(module_loss, config['loss']['type'])(weight=weight)
-    metrics = [getattr(module_metric, met) for met in config['metrics']]
+        # build model architecture, then print to console
+        model = config.init_obj('arch', module_arch)
+        logger.info(model)
 
-    # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
-    trainable_params = filter(lambda p: p.requires_grad, model.parameters())
-    optimizer = config.init_obj('optimizer', torch.optim, trainable_params)
-    lr_scheduler = config.init_obj('lr_scheduler', torch.optim.lr_scheduler, optimizer)
+        # prepare for (multi-device) GPU training
+        device, device_ids = prepare_device(config['n_gpu'])
+        model = model.to(device)
+        # if len(device_ids) > 1:
+        #     model = torch.nn.DataParallel(model, device_ids=device_ids)
 
-    trainer = Trainer(model, criterion, metrics, optimizer,
-                      config=config,
-                      device=device,
-                      data_loader=data_loader,
-                      valid_data_loader=valid_data_loader,
-                      lr_scheduler=lr_scheduler)
+        # get function handles of loss and metrics
+        # weight = data_loader.dataset.class_weights.to(device) if config['loss']['args']['class_weight'] else None
+        # criterion = config.init_ftn('loss', module_loss)
+        criterion = module_loss.LabelSmoothingLoss(classes=18, smoothing=0.1)
+        # criterion = getattr(module_loss, config['loss']['type'])(weight=weight)
+        metrics = [getattr(module_metric, met) for met in config['metrics']]
 
-    trainer.train()
+        # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
+        trainable_params = filter(lambda p: p.requires_grad, model.parameters())
+        optimizer = config.init_obj('optimizer', torch.optim, trainable_params)
+        lr_scheduler = config.init_obj('lr_scheduler', torch.optim.lr_scheduler, optimizer)
+
+        trainer = Trainer(model, criterion, metrics, optimizer,
+                        config=config,
+                        device=device,
+                        data_loader=train_data_loader,
+                        valid_data_loader=valid_data_loader,
+                        lr_scheduler=lr_scheduler)
+
+        trainer.train()
+
+    if config['wandb']['use']:
+        with wandb.init(name=config['name'], project=config['wandb']['args']['project'],
+                        entity=config['wandb']['args']['entity'], config=config):
+            wandb_config = wandb.config
+            _main(config)
+    else:
+        _main(config)
 
 
 if __name__ == '__main__':
@@ -75,4 +88,6 @@ if __name__ == '__main__':
         CustomArgs(['--bs', '--batch_size'], type=int, target='data_loader;args;batch_size')
     ]
     config = ConfigParser.from_args(args, options)
+
+    wandb.login()
     main(config)

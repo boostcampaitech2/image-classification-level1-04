@@ -7,6 +7,8 @@ from torch.utils.data import Dataset
 import torch
 import numpy as np
 from sklearn.utils import class_weight
+from sklearn.model_selection import train_test_split
+from .transforms import transforms_select
 
 class MaskDataset(Dataset):
     """
@@ -15,39 +17,42 @@ class MaskDataset(Dataset):
     """
     def __init__(self, csv_path, transform=None):
         super().__init__()
-        self.transform = transform
+
+        if transform is None: 
+            self.transform = transforms_select(method='DEFAULT') # if you use VIT, use VIT_DEFAULT
+        else:
+            self.transform = transform
         self.dir_path = os.path.dirname(csv_path)
         self.csv_path = csv_path
-        self.img_dir_path = os.path.join(self.dir_path, 'images')
-        self.trans_csv_path = os.path.join(self.dir_path, 'trans_train_v4.csv')
+        self.img_dir_path = os.path.join(self.dir_path, 'new_images2')
+        self.trans_csv_path = os.path.join(self.dir_path, 'trans_train_facecrop.csv') # origin : 'trans_train.csv'
         # See EDA/FixNote_Labeling_error.ipynb
         self.incorrect_labels = {'error_in_female' : ['006359', '006360', '006361', '006362', '006363', '006364'],
                                 'error_in_male' : ['001498-1', '004432'],
                                 'swap_normal_incorrect' : ['000020', '004418', '005227']}
-        # if preprocessed trans_train_v4.csv file doesnt' exists,
-        # preprocess train.csv -> trans_train_v4.csv
+        # if preprocessed trans_train.csv file doesnt' exists,
+        # preprocess train.csv -> trans_train.csv
         if os.path.exists(self.trans_csv_path):
             pass
         else:
             self._makeCSV()
 
-        self.df = pd.read_csv(self.trans_csv_path).values
+        self.df = pd.read_csv(self.trans_csv_path)
+        # self.images = np.apply_along_axis(lambda x : self.transform(PIL.Image.open(x).convert("RGB")), axis=0, arr=self.df[:, -2])
         self.class_weights = self._get_class_weight()
 
     def __len__(self):
         return len(self.df)
 
     def __getitem__(self, index):
-        sample = self.df[index]
-        label = sample[-1]
-        image = PIL.Image.open(sample[-2])
+        image = PIL.Image.open(self.df['path'].iloc[index])
         image = np.array(image.convert("RGB"))
         if self.transform is not None:
-            #image = self.transform(image)
             transformed = self.transform(image=image)
             image = transformed['image']
-        return image, torch.tensor(label)
-
+        return image, torch.tensor(self.df['label'].iloc[index])
+        # return self.images[index], torch.tensor(label)
+ 
     def _makeCSV(self):
         df = pd.read_csv(self.csv_path)
         with open(self.trans_csv_path, 'wt', newline='') as csvfile:
@@ -88,9 +93,46 @@ class MaskDataset(Dataset):
 
     def _get_class_weight(self):
         class_weights = dict(enumerate(class_weight.compute_class_weight('balanced',
-                            classes=np.sort(np.unique(self.df[:, -1])), # label
-                            y=self.df[:, -1])))
+                            classes=np.sort(np.unique(self.df.iloc[:, -1])), # label
+                            y=self.df.iloc[:, -1])))
         return torch.tensor(list(class_weights.values()), dtype=torch.float)
+    
+    def split_validation(self, validation_split, valid_trsfm):
+        '''
+        output:
+        train set : MaskSubDataset
+        valid set : MaskSubDataset
+        '''
+        df_train, df_val = train_test_split(self.df, test_size=validation_split, random_state=42, stratify=self.df.to_numpy()[:,-1])
+        train = MaskSubDataset(df_train, transform=self.transform)
+        val = MaskSubDataset(df_val, transform=valid_trsfm)
+        return train, val
+
+class MaskSubDataset(Dataset):
+    """
+    """
+    def __init__(self, dataset, transform=None):
+        super().__init__()
+
+        if transform is None: 
+            self.transform = transforms_select(method='DEFAULT') # if you use VIT, use VIT_DEFAULT
+        else:
+            self.transform = transform
+        self.df = dataset
+
+    def __len__(self):
+        return len(self.df)
+
+    def __getitem__(self, index):
+        image = PIL.Image.open(self.df['path'].iloc[index])
+        image = np.array(image.convert("RGB"))
+        if self.transform is not None:
+            transformed = self.transform(image=image)
+            image = transformed['image']
+        return image, torch.tensor(self.df['label'].iloc[index])
+
+    def get_labels(self):
+        return self.df.iloc[:, -1]
 
 class MaskSubmitDataset(Dataset):
     """
