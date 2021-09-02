@@ -63,7 +63,7 @@ def transforms_select(method, MEAN=MEAN_IMAGENET, STD=STD_IMAGENET):
                                     ]),
 
             "Cutout_Elastic_Transform" : A.Compose([
-                                        A.Resize(326, 272),
+                                        A.Resize(384, 384),
                                         A.ElasticTransform(),
                                         A.Cutout(),
                                         A.Normalize(mean=MEAN,
@@ -72,7 +72,7 @@ def transforms_select(method, MEAN=MEAN_IMAGENET, STD=STD_IMAGENET):
                                     ]),
 
             "TRNS004" : A.Compose([
-                            A.Resize(326, 272), # FaceNet으로 찾은 평균적인 잘라낸 사진의 크기 (mean + 1.5 * std)
+                            A.Resize(384, 384), # FaceNet으로 찾은 평균적인 잘라낸 사진의 크기 (mean + 1.5 * std)
                             A.HorizontalFlip(p=0.5),
                             A.Cutout(num_holes=8, max_h_size=32,max_w_size=32),
                             A.ElasticTransform(),

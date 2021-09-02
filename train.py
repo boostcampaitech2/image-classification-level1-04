@@ -45,7 +45,8 @@ def main(config):
         # get function handles of loss and metrics
         # weight = data_loader.dataset.class_weights.to(device) if config['loss']['args']['class_weight'] else None
         # criterion = config.init_ftn('loss', module_loss)
-        criterion = module_loss.LabelSmoothingLoss(classes=18, smoothing=0.1)
+        # criterion = module_loss.LabelSmoothingLoss(classes=18, smoothing=0.1)
+        criterion = module_loss.FocalLoss()
         # criterion = getattr(module_loss, config['loss']['type'])(weight=weight)
         metrics = [getattr(module_metric, met) for met in config['metrics']]
 

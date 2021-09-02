@@ -1,5 +1,5 @@
 {
-    "name": "EfficientNet_b3_Cutout_Elastic_CLAHE_Transform_LabelSmoothing_InputSize300_FocalLoss_Arc",
+    "name": "EfficientNet_b3_Cutout_Elastic_CLAHE_Transform_LabelSmoothing_InputSize384",
     "n_gpu": 1,
     "arch": {
         "type": "PretrainModelTimmArc",
@@ -32,7 +32,7 @@
         }
     },
     "loss": {
-        "type": "FocalLoss",
+        "type": "LabelSmoothingLoss",
         "args": {
             "class_weight": false
         }
@@ -56,7 +56,7 @@
         "verbosity": 2,
         "monitor": "min val_loss",
         "early_stop": 5,
-        "tensorboard": false
+        "tensorboard": true
     },
     "wandb": {
         "use": true,

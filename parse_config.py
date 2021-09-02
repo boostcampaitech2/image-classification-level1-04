@@ -44,7 +44,9 @@ class ConfigParser:
         self.log_levels = {
             0: logging.WARNING,
             1: logging.INFO,
-            2: logging.DEBUG
+            2: logging.DEBUG,
+            3: logging.ERROR
+            # 3: logging.ERROR
         }
 
     @classmethod # factory pattern
