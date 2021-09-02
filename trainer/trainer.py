@@ -4,6 +4,9 @@ from torchvision.utils import make_grid
 from base import BaseTrainer
 from utils import inf_loop, MetricTracker
 
+from torch.cuda.amp import autocast
+from torch.cuda.amp import GradScaler
+
 
 class Trainer(BaseTrainer):
     """
@@ -39,14 +42,29 @@ class Trainer(BaseTrainer):
         """
         self.model.train()
         self.train_metrics.reset()
+
+        scaler = GradScaler()
+
         for batch_idx, (data, target) in enumerate(self.data_loader):
             data, target = data.to(self.device), target.to(self.device)
 
             self.optimizer.zero_grad()
-            output = self.model(data)
-            loss = self.criterion(output, target)
-            loss.backward()
-            self.optimizer.step()
+            
+            #output = self.model(data)
+            #loss = self.criterion(output, target)
+            #loss.backward()
+            #with amp.scale_loss(loss, self.optimizer) as scaled_loss:
+	        #    scaled_loss.backward()
+
+            with autocast():
+                output = self.model(data)
+                loss = self.criterion(output,target)
+
+            scaler.scale(loss).backward()
+
+            scaler.step(self.optimizer)
+            scaler.update()
+
 
             self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
             self.train_metrics.update('loss', loss.item())
@@ -95,8 +113,8 @@ class Trainer(BaseTrainer):
                 self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
         # add histogram of model parameters to the tensorboard
-        for name, p in self.model.named_parameters():
-            self.writer.add_histogram(name, p, bins='auto')
+#        for name, p in self.model.named_parameters():
+#            self.writer.add_histogram(name, p, bins='auto')
         return self.valid_metrics.result()
 
     def _progress(self, batch_idx):
