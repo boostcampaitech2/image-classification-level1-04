@@ -74,7 +74,7 @@ class MaskDataset(Dataset):
                     if data["age"] >= 60 :
                         label+=2
                     elif data["age"] >=30 and data["age"] < 60:
-                        label+=1          
+                        label+=1
                     
                     # incorrect label fix
                     ## 1. female -> male

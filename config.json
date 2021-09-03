@@ -1,5 +1,5 @@
 {
-    "name": "EfficientNet_b3_Cutout_Elastic_CLAHE_Transform_LabelSmoothing_InputSize300_FocalLoss_Arc",
+    "name": "EfficientNet_b3_Cutout_Elastic_CLAHE_Transform_LabelSmoothing_InputSize300_CrossEntropyLoss_Arc",
     "n_gpu": 1,
     "arch": {
         "type": "PretrainModelTimmArc",
@@ -32,7 +32,7 @@
         }
     },
     "loss": {
-        "type": "FocalLoss",
+        "type": "cross_entropy_loss",
         "args": {
             "class_weight": false
         }
