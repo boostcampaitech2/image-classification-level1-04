@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 from torchvision.utils import make_grid
+import wandb
 from base import BaseTrainer
 from utils import inf_loop, MetricTracker
 
@@ -39,17 +40,23 @@ class Trainer(BaseTrainer):
         """
         self.model.train()
         self.train_metrics.reset()
+
         for batch_idx, (data, target) in enumerate(self.data_loader):
             data, target = data.to(self.device), target.to(self.device)
-
+            example_ct = (epoch - 1) * self.len_epoch + batch_idx
             self.optimizer.zero_grad()
+            
             output = self.model(data)
+            if self.model.__class__.__name__ == 'PretrainModelTimmArc':
+                output = self.model.metric_fc(output, target)
+                # output = self.criterion(feature, target)
+
             loss = self.criterion(output, target)
             loss.backward()
             self.optimizer.step()
 
-            self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
-            self.train_metrics.update('loss', loss.item())
+            # self.writer.set_step(example_ct)
+            self.train_metrics.update('loss', loss.detach())
             for met in self.metric_ftns:
                 self.train_metrics.update(met.__name__, met(output, target))
 
@@ -57,9 +64,10 @@ class Trainer(BaseTrainer):
                 self.logger.debug('Train Epoch: {} {} Loss: {:.6f}'.format(
                     epoch,
                     self._progress(batch_idx),
-                    loss.item()))
-                self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
-
+                    loss.detach()))
+                # self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
+                if self.cfg_wandb['use']:
+                    wandb.log({"loss": loss.detach()}, step=example_ct)
             if batch_idx == self.len_epoch:
                 break
         log = self.train_metrics.result()
@@ -67,7 +75,8 @@ class Trainer(BaseTrainer):
         if self.do_validation:
             val_log = self._valid_epoch(epoch)
             log.update(**{'val_'+k : v for k, v in val_log.items()})
-
+            if self.cfg_wandb['use']:
+                wandb.log({'val_'+k : v for k, v in val_log.items()}, step=example_ct)
         if self.lr_scheduler is not None:
             self.lr_scheduler.step()
         return log
@@ -86,13 +95,15 @@ class Trainer(BaseTrainer):
                 data, target = data.to(self.device), target.to(self.device)
 
                 output = self.model(data)
+                if self.model.__class__.__name__ == 'PretrainModelTimmArc':
+                    output = self.model.metric_fc(output, target)
                 loss = self.criterion(output, target)
 
-                self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
-                self.valid_metrics.update('loss', loss.item())
+                # self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
+                self.valid_metrics.update('loss', loss.detach())
                 for met in self.metric_ftns:
                     self.valid_metrics.update(met.__name__, met(output, target))
-                self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
+                # self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
         # add histogram of model parameters to the tensorboard
         for name, p in self.model.named_parameters():

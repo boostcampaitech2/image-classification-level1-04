@@ -2,7 +2,7 @@ import torch
 from abc import abstractmethod
 from numpy import inf
 from logger import TensorboardWriter
-
+import wandb
 
 class BaseTrainer:
     """
@@ -21,6 +21,7 @@ class BaseTrainer:
         self.epochs = cfg_trainer['epochs']
         self.save_period = cfg_trainer['save_period']
         self.monitor = cfg_trainer.get('monitor', 'off')
+        self.cfg_wandb = config['wandb']
 
         # configuration to monitor model performance and save best
         if self.monitor == 'off':
@@ -58,6 +59,9 @@ class BaseTrainer:
         """
         Full training logic
         """
+        if self.cfg_wandb['use']:
+            wandb.watch(self.model, self.criterion, log='all', log_freq=self.log_step)
+        
         not_improved_count = 0
         for epoch in range(self.start_epoch, self.epochs + 1):
             result = self._train_epoch(epoch)
