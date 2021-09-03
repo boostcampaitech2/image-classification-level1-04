@@ -184,7 +184,6 @@ which is increased to 256 by command line options.
 - [x] Add transforms feature(or Albumentation)
 - [ ] `Weights & Biases` logger support
 - [x] Add pretrained model(e.g. , EfficientNet, ...)
-- [ ] Add Raytune Module
 
 ## License
 This project is licensed under the MIT License. See  LICENSE for more details

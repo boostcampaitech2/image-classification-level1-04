@@ -18,11 +18,11 @@
         "type": "MaskDataLoader",
         "args":{
             "data_dir": "../input/data",
-            "batch_size": 32,
+            "batch_size": 128,
             "shuffle": false,
             "validation_split": 0.0,
             "num_workers": 1,
-            "submit": true
+            "submit": false
         }
     },
     "optimizer": {

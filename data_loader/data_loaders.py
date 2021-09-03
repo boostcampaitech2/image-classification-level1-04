@@ -17,10 +17,9 @@ class MaskDataLoader(BaseDataLoader):
         self.data_dir = data_dir
         self.train_dir = os.path.join(self.data_dir, 'train')
         self.eval_dir = os.path.join(self.data_dir, 'eval')
-        
-        if not training or submit or trsfm is None:
-            print('Use DEFALUT transforms...')
-            trsfm = transforms_select(method='DEFAULT')
+
+        if not trsfm or not training or submit:
+            trsfm = transforms_select(method='DEFAULT') # if you use VIT, use VIT_DEFAULT
         
         if not submit:
             # Set up transforms for training
