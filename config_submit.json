@@ -1,5 +1,5 @@
 {
-    "name": "PretrainModelTimm_ViT",
+    "name": "PretrainModelTimm_ViT_base",
     "n_gpu": 1,
 
     "arch": {
@@ -10,7 +10,7 @@
     "transforms_select": {
         "type": "transforms_select",
         "args": {
-            "method": "DEFAULT"
+            "method": "TRNS008"
         }
     },
     
@@ -45,7 +45,7 @@
         }
     },
     "trainer": {
-        "epochs": 20,
+        "epochs": 50,
 
         "save_dir": "saved/",
         "save_period": 1,
