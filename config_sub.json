@@ -8,8 +8,8 @@
     "transforms_select": {
         "type": "transforms_select",
         "args": {
-            "method": "ENN_test",
-            "default": "ENN_test"
+            "method": "VIT_TRNS004",
+            "default": "ENN_TEST"
         }
     },
     "data_loader": {
