@@ -18,66 +18,66 @@ Level 1 P-Stage Image Classification Project Repository
 
 ## Folder Structure
   ```
-  input/data/
-    ├──train
-    │   ├── images
-    │   │    ├ 000001_female_Asian_45
-    │   │    │  ├ mask1.jpg
-    │   │    │  ├ mask2.jpg
-    │   │    │  ├ mask3.jpg
-    │   │    │  ├ mask4.jpg
-    │   │    │  ├ mask5.jpg
-    │   │    │  ├ incorrect.jpg
-    │   │    │  └ normal.jpg                          
-    │   │    └ ...
-    │   ├── train.csv
-    │   └── trans_train.csv  
-    └──eval
-        ├── info.csv
-        └── images
-             ├── ._0a2bd33bf76d7426f3d6ca0b7fbe03ee431159b4.jpg
-             └── ...
-  image-classification-level1-04/
-  │
-  ├── train.py - main script to start training
-  ├── test.py - evaluation of trained model
-  │
-  ├── config.json - holds configuration for training
-  ├── config_submit.json - holds configuration for submit
-  │
-  ├── parse_config.py - class to handle config file and cli options
-  │  
-  ├── base/ - abstract base classes
-  │   ├── base_data_loader.py
-  │   ├── base_model.py
-  │   └── base_trainer.py
-  │
-  ├── data_loader/ - anything about data loading goes here
-  │   ├── data_loader.py
-  │   ├── datasets.py
-  │   └── transforms.py
-  │
-  ├── model/ - models, losses, and metrics
-  │   ├── model.py
-  │   ├── metric.py
-  │   └── loss.py
-  │
-  ├── saved/
-  │   ├── models/ - trained models are saved here
-  │   └── log/ - default logdir for tensorboard and logging output
-  │
-  ├── trainer/ - trainers
-  │   └── trainer.py
-  │
-  ├── logger/ - module for tensorboard visualization and logging
-  │   ├── visualization.py
-  │   ├── logger.py
-  │   └── logger_config.json
-  │  
-  └── utils/ - small utility functions
-      ├── util.py
-      └── ...
-  ```
+	input/data/
+	├──train
+	│   ├── images
+	│   │    ├ 000001_female_Asian_45
+	│   │    │  ├ mask1.jpg
+	│   │    │  ├ mask2.jpg
+	│   │    │  ├ mask3.jpg
+	│   │    │  ├ mask4.jpg
+	│   │    │  ├ mask5.jpg
+	│   │    │  ├ incorrect.jpg
+	│   │    │  └ normal.jpg                          
+	│   │    └ ...
+	│   ├── train.csv
+	│   └── trans_train.csv  
+	└──eval
+	├── info.csv
+	└── images
+	     ├── ._0a2bd33bf76d7426f3d6ca0b7fbe03ee431159b4.jpg
+	     └── ...
+	image-classification-level1-04/
+	│
+	├── train.py - main script to start training
+	├── test.py - evaluation of trained model
+	│
+	├── config.json - holds configuration for training
+	├── config_submit.json - holds configuration for submit
+	│
+	├── parse_config.py - class to handle config file and cli options
+	│  
+	├── base/ - abstract base classes
+	│   ├── base_data_loader.py
+	│   ├── base_model.py
+	│   └── base_trainer.py
+	│
+	├── data_loader/ - anything about data loading goes here
+	│   ├── data_loader.py
+	│   ├── datasets.py
+	│   └── transforms.py
+	│
+	├── model/ - models, losses, and metrics
+	│   ├── model.py
+	│   ├── metric.py
+	│   └── loss.py
+	│
+	├── saved/
+	│   ├── models/ - trained models are saved here
+	│   └── log/ - default logdir for tensorboard and logging output
+	│
+	├── trainer/ - trainers
+	│   └── trainer.py
+	│
+	├── logger/ - module for tensorboard visualization and logging
+	│   ├── visualization.py
+	│   ├── logger.py
+	│   └── logger_config.json
+	│  
+	└── utils/ - small utility functions
+	├── util.py
+	└── ...
+```
 
 ## Usage
 pip install https://github.com/ufoym/imbalanced-dataset-sampler/archive/master.zip
