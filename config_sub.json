@@ -1,0 +1,69 @@
+{
+    "name": "Sub_EfficientNet_b3",
+    "n_gpu": 1,
+    "arch": {
+        "type": "EfficientNet_b3",
+        "args": {}
+    },
+    "transforms_select": {
+        "type": "transforms_select",
+        "args": {
+            "method": "ENN_test",
+            "default": "ENN_test"
+        }
+    },
+    "data_loader": {
+        "type": "MaskDataLoader",
+        "args": {
+            "data_dir": "../input/data",
+            "batch_size": 32,
+            "shuffle": true,
+            "validation_split": 0.1,
+            "num_workers": 8,
+            "submit": false,
+            "sampler": "normal",
+            "is_main": false 
+        }
+    },
+    "optimizer": {
+        "type": "Adam",
+        "args": {
+            "lr": 5e-4,
+            "weight_decay": 0,
+            "amsgrad": true
+        }
+    },
+    "loss": {
+        "type": "cross_entropy_loss",
+        "args": {
+            "class_weight": false
+        }
+    },
+    "metrics": [
+        "accuracy",
+        "f1"
+    ],
+    "lr_scheduler": {
+        "type": "CosineAnnealingLR",
+        "args": {
+            "T_max": 50,
+            "eta_min": 0.1
+        }
+    },
+    "trainer": {
+        "epochs": 40,
+        "save_dir": "saved/",
+        "save_period": 1,
+        "verbosity": 2,
+        "monitor": "min val_loss",
+        "early_stop": 40, 
+        "tensorboard": false
+    },
+    "wandb": {
+        "use": true,
+        "args": {
+            "project": "basic",
+            "entity": "boostcamp-level01-04"
+        }
+    }
+}

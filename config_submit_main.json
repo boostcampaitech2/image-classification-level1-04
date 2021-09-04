@@ -1,0 +1,69 @@
+{
+    "name": "PretrainModelTimmViTBasePath16_TRNS004_Adam_StepLR",
+    "n_gpu": 1,
+    "arch": {
+        "type": "PretrainModelTimmViTBasePath16",
+        "args": {}
+    },
+    "transforms_select": {
+        "type": "transforms_select",
+        "args": {
+            "method": "VIT_TRNS004",
+            "default": "VIT_DEFAULT"
+        }
+    },
+    "data_loader": {
+        "type": "MaskDataLoader",
+        "args": {
+            "data_dir": "../input/data",
+            "batch_size": 64,
+            "shuffle": true,
+            "validation_split": 0.1,
+            "num_workers": 8,
+            "submit": true,
+            "sampler": "over",
+            "is_main": true 
+        }
+    },
+    "optimizer": {
+        "type": "Adam",
+        "args": {
+            "lr": 2e-5,
+            "weight_decay": 0,
+            "amsgrad": true
+        }
+    },
+    "loss": {
+        "type": "cross_entropy_loss",
+        "args": {
+            "class_weight": false
+        }
+    },
+    "metrics": [
+        "accuracy",
+        "f1"
+    ],
+    "lr_scheduler": {
+        "type": "StepLR",
+        "args": {
+            "step_size": 50,
+            "gamma": 0.1
+        }
+    },
+    "trainer": {
+        "epochs": 20,
+        "save_dir": "saved/",
+        "save_period": 1,
+        "verbosity": 2,
+        "monitor": "min val_loss",
+        "early_stop": 5,
+        "tensorboard": false
+    },
+    "wandb": {
+        "use": true,
+        "args": {
+            "project": "basic",
+            "entity": "boostcamp-level01-04"
+        }
+    }
+}

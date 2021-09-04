@@ -24,11 +24,11 @@ def main(config):
     def _main(config):
         logger = config.get_logger('train')
         # setup transforms instances
-        trsfm = config.init_ftn('transforms_select', module_trsfm)()
+        trsfm, default_trsfm = config.init_ftn('transforms_select', module_trsfm)()
 
         # setup data_loader instances
         data_loader = config.init_obj('data_loader', module_data,
-                                    trsfm=trsfm)
+                                    trsfm=trsfm, default_trsfm=default_trsfm)
 
         train_data_loader, valid_data_loader, _ = data_loader.split_validation()
 
@@ -36,20 +36,11 @@ def main(config):
         model = config.init_obj('arch', module_arch)
         logger.info(model)
 
-        # prepare for (multi-device) GPU training
         device, _ = prepare_device(config['n_gpu'])
         model = model.to(device)
-        # if len(device_ids) > 1:
-        #     model = torch.nn.DataParallel(model, device_ids=device_ids)
 
         # get function handles of loss and metrics
-        # weight = data_loader.dataset.class_weights.to(device) if config['loss']['args']['class_weight'] else None
-        # criterion = config.init_ftn('loss', module_loss)
-        # criterion = module_loss.LabelSmoothingLoss(classes=18, smoothing=0.1)
-        # criterion = module_loss.FocalLoss()
-        # criterion = module_loss.cross_entropy_loss()
         criterion = getattr(module_loss, config['loss']['type'])
-        # criterion = getattr(module_loss, config['loss']['type'])(weight=weight)
         metrics = [getattr(module_metric, met) for met in config['metrics']]
 
         # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler

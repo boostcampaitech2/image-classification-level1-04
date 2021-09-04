@@ -1,33 +1,35 @@
 {
-    "name": "EfficientNet_b3_Cutout_Elastic_CLAHE_Transform_LabelSmoothing_InputSize300_CrossEntropyLoss_Arc",
+    "name": "Sub_EfficientNet_b3",
     "n_gpu": 1,
     "arch": {
-        "type": "PretrainModelTimmArc",
+        "type": "EfficientNet_b3",
         "args": {}
     },
     "transforms_select": {
         "type": "transforms_select",
         "args": {
-            "method": "Cutout_Elastic_CLAHE_Transform"
+            "method": "VIT_TRNS004",
+            "default": "ENN_TEST"
         }
     },
     "data_loader": {
         "type": "MaskDataLoader",
         "args": {
             "data_dir": "../input/data",
-            "batch_size": 32,
-            "shuffle": true,
+            "batch_size": 64,
+            "shuffle": false,
             "validation_split": 0.1,
             "num_workers": 8,
-            "submit": false,
-            "sampler": "over"
+            "submit": true,
+            "sampler": "normal",
+            "is_main": false 
         }
     },
     "optimizer": {
-        "type": "AdamW",
+        "type": "Adam",
         "args": {
-            "lr": 3e-4,
-            "weight_decay": 0.01,
+            "lr": 5e-4,
+            "weight_decay": 0,
             "amsgrad": true
         }
     },
@@ -39,23 +41,22 @@
     },
     "metrics": [
         "accuracy",
-        "top_k_acc",
         "f1"
     ],
     "lr_scheduler": {
         "type": "CosineAnnealingLR",
         "args": {
             "T_max": 50,
-            "eta_min": 0
+            "eta_min": 0.1
         }
     },
     "trainer": {
-        "epochs": 10,
+        "epochs": 40,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
         "monitor": "min val_loss",
-        "early_stop": 5,
+        "early_stop": 40, 
         "tensorboard": false
     },
     "wandb": {

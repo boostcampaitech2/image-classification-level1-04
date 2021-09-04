@@ -5,13 +5,13 @@ import cv2
 # Change this value by what pretrained model you use
 MEAN_IMAGENET = [0.485, 0.456, 0.406]
 STD_IMAGENET = [0.229, 0.224, 0.225]
-# Mask Dataset's statics
+# MASK Dataset's statics
 # See EDA/2_EDA.ipynb
-MEAN_Mask = [0.55800916, 0.51224077, 0.47767341]
+MEAN_MASK = [0.55800916, 0.51224077, 0.47767341]
 STD_MASK = [0.21817792, 0.23804603, 0.25183411]
 
 
-def transforms_select(method, MEAN=MEAN_IMAGENET, STD=STD_IMAGENET):
+def transforms_select(method, default, MEAN=MEAN_IMAGENET, STD=STD_IMAGENET):
     lib =  {'DEFAULT' : A.Compose([
                             A.Resize(384, 384),
                             A.Normalize(mean=MEAN,
@@ -25,7 +25,6 @@ def transforms_select(method, MEAN=MEAN_IMAGENET, STD=STD_IMAGENET):
                                         std=STD),
                             ToTensorV2(),
                         ]),
-                        
             "TRNS001" : A.Compose([
                             A.Resize(512, 384),
                             A.HueSaturationValue(),
@@ -33,13 +32,6 @@ def transforms_select(method, MEAN=MEAN_IMAGENET, STD=STD_IMAGENET):
                             A.Normalize(mean=MEAN,
                                         std=STD),
                             ToTensorV2(),
-                        ]),
-
-            "TRNS004" : A.Compose([
-                            A.Resize(384, 384), # FaceNet으로 찾은 평균적인 잘라낸 사진의 크기 (mean + 1.5 * std)
-                            A.HorizontalFlip(p=0.5),
-                            A.Cutout(num_holes=8, max_h_size=32,max_w_size=32),
-                            A.ElasticTransform(),
                         ]),
 
             "TRNS011" : A.Compose([
@@ -154,6 +146,12 @@ def transforms_select(method, MEAN=MEAN_IMAGENET, STD=STD_IMAGENET):
                                                     std=STD),
                                         ToTensorV2(),
                                     ]),
+
+            'ENN_TEST': A.Compose([
+                                        A.Resize(224, 224),
+                                        A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                                        ToTensorV2()
+                                ])
             # Write down any combination you want...
     }
-    return lib[method]
+    return lib[method], lib[default]

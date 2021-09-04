@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from facenet_pytorch import MTCNN
 import os
 from PIL import Image
+
+# Eval
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 mtcnn = MTCNN(keep_all=True, device=device)
 img_path = '/opt/ml/input/data/eval/images/'
@@ -67,7 +69,6 @@ for paths in os.listdir(img_path):
         print(tmp)
         #plt.imsave(os.path.join(tmp, imgs), img)
         img.save(tmp)
-print(cnt)
 
 # Train
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -127,4 +128,3 @@ for paths in os.listdir(img_path):
         cnt += 1
         #plt.imsave(os.path.join(tmp, imgs), img)
         img.save(os.path.join(tmp, imgs))
-print(cnt)
