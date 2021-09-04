@@ -120,39 +120,39 @@ Config files are in `.json` format:
         "type": "Adam",
         "args": {
             "lr": 2e-5,                     			   // learning rate
-            "weight_decay": 0,                						       // (optional) weight decay
+            "weight_decay": 0,                			   // (optional) weight decay
             "amsgrad": true
         }
     },
     "loss": {
-        "type": "cross_entropy_loss",								             //loss
+        "type": "cross_entropy_loss",				   //loss
         "args": {
             "class_weight": false
         }
     },
     "metrics": [
-        "accuracy","f1"												                   // list of metrics to evaluate
+        "accuracy","f1"						   // list of metrics to evaluate
     ],
     "lr_scheduler": {
-        "type": "StepLR",											                   // learning rate scheduler
+        "type": "StepLR",					   // learning rate scheduler
         "args": {
             "step_size": 50,
             "gamma": 0.1
         }
     },
     "trainer": {
-		"epochs": 20,                         						           // number of training epochs
-		"save_dir": "saved/",              							             // checkpoints are saved in save_dir/models/name
-		"save_period": 1,                    						             // save checkpoints every save_freq epochs
-		"verbosity": 2,                    							             // 0: quiet, 1: per epoch, 2: full	
-		"monitor": "min val_loss"          							             // mode and metric for model performance monitoring. set 'off' to disable.
-		"early_stop": 10,	                						               // number of epochs to wait before early stop. set 0 to disable.  		
+		"epochs": 20,                                      // number of training epochs
+		"save_dir": "saved/",              		   // checkpoints are saved in save_dir/models/name
+		"save_period": 1,                    		   // save checkpoints every save_freq epochs
+		"verbosity": 2,                    		   // 0: quiet, 1: per epoch, 2: full	
+		"monitor": "min val_loss"          		   // mode and metric for model performance monitoring. set 'off' to disable.
+		"early_stop": 10,	                	   // number of epochs to wait before early stop. set 0 to disable.  		
     },
     "wandb": {
-        "use": true,												                     //enable tensorboard visualization
+        "use": true,						   //enable tensorboard visualization
         "args": {
-            "project": "basic", 									               //sub project name
-            "entity": "boostcamp-level01-04"						         //project name
+            "project": "basic", 				   //sub project name
+            "entity": "boostcamp-level01-04"			   //project name
         }
     }
 }
