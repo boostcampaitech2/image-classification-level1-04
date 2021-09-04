@@ -59,7 +59,7 @@ def main(config):
         print(f'test inference is saved at {save_path}!')
         print('test inference is done!')
 
-    else:
+    elif config['m'] == 'sub':
         logger = config.get_logger('test')
         filst = sorted(os.path.join(submission_path, '*', ), key=os.path.getctime)
         df_submission = os.path.join(submission_path, filst[-1])
@@ -112,7 +112,7 @@ if __name__ == '__main__':
                       help='path to latest checkpoint (default: None)')
     args.add_argument('-d', '--device', default=None, type=str,
                       help='indices of GPUs to enable (default: all)')
-    args.add_argument('-m', '--model', default='main', type=bool,
+    args.add_argument('-m', '--model', default='main', type=str,
                       help='main vs sub (default: main)')
 
     config = ConfigParser.from_args(args)
