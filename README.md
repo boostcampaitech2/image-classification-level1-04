@@ -82,10 +82,7 @@ Level 1 P-Stage Image Classification Project Repository
 ## Usage
 pip install https://github.com/ufoym/imbalanced-dataset-sampler/archive/master.zip
 Try `python train.py -c config.json` to run code.
-## Usage for test
-python test.py --resume path/to/checkpoint(e.g. saved/models/[confg.name]/[MMDD_Hashvalue]/checkpoint-epoch#.pth)
-## Usage for submit .csv
-python submit.py --resume path/to/checkpoint(e.g. saved/models/[confg.name]/[MMDD_Hashvalue]/checkpoint-epoch#.pth)
+
 
 
 
@@ -107,11 +104,11 @@ Config files are in `.json` format:
         }
     },
     "data_loader": {
-        "type": "MaskDataLoader",         				                // selecting data loader
+        "type": "MaskDataLoader",         			   // selecting data loader                
         "args": {
-            "data_dir": "../input/data",  							          // dataset path
-            "batch_size": 32,             							          // batch size
-			"shuffle": true,                 						                // shuffle training data before splitting
+            "data_dir": "../input/data",  		    	   // dataset path
+            "batch_size": 32,             			   // batch size
+			"shuffle": true,                           // shuffle training data before splitting
 			"validation_split": 0.1          						                // size of validation dataset. float(portion) or int(number of samples)
 			"num_workers": 2,                						                // number of cpu processes to be used for data loading
 			"trsfm": false,              						                    // use transforms
@@ -173,45 +170,41 @@ You can resume from a previously saved checkpoint by:
 
   ```
   python train.py --resume (e.g. saved/models/[confg.name]/[MMDD_Hashvalue]/checkpoint-epoch#.pth)
+  ```  
+
+### Test from checkpoints
+You can test from a previously saved checkpoint by:
+
+  ```
+  python test.py --resume path/to/checkpoint(e.g. saved/models/[confg.name]/[MMDD_Hashvalue]/checkpoint-epoch#.pth)
+  ```
+
+### Submit from checkpoints
+You can submit from a previously saved checkpoint by:
+
+  ```
+  python submit.py --resume path/to/checkpoint(e.g. saved/models/[confg.name]/[MMDD_Hashvalue]/checkpoint-epoch#.pth)
   ```
   
+## Customization 
 
-### Resuming from checkpoints
-You can resume from a previously saved checkpoint by:
-
-  ```
-  python train.py --resume path/to/checkpoint(e.g. saved/models/[confg.name]/[MMDD_Hashvalue]/checkpoint-epoch#.pth)
-  ```
-
-## Customization
-
-### Custom CLI options
-
-Changing values of config file is a clean, safe and easy way of tuning hyperparameters. However, sometimes
-it is better to have command line options if some values need to be changed too often or quickly.
-
-This template uses the configurations stored in the json file by default, but by registering custom options as follows
-you can change some of them using CLI flags.
-
-  ```python
-  # simple class-like object having 3 attributes, `flags`, `type`, `target`.
-  CustomArgs = collections.namedtuple('CustomArgs', 'flags type target')
-  options = [
-      CustomArgs(['--lr', '--learning_rate'], type=float, target=('optimizer', 'args', 'lr')),
-      CustomArgs(['--bs', '--batch_size'], type=int, target=('data_loader', 'args', 'batch_size'))
-      # options added here can be modified by command line flags.
-  ]
-  ```
-`target` argument should be sequence of keys, which are used to access that option in the config dict. In this example, `target` 
-for the learning rate option is `('optimizer', 'args', 'lr')` because `config['optimizer']['args']['lr']` points to the learning rate.
-`python train.py -c config.json --bs 256` runs training with options given in `config.json` except for the `batch size`
-which is increased to 256 by command line options.
 
 ## TODOs
-
 - [x] Add transforms feature(or Albumentation)
-- [ ] `Weights & Biases` logger support
-- [x] Add pretrained model(e.g. , EfficientNet, ...)
+- [x] `Weights & Biases` logger support
+- [x] Add pretrained model(e.g. EfficientNet, ViT, Resnet ...)
+- [x] Data Augmentation (e.g. CLAHE, Elastic & Cutmix, Horizontal Flip, ...)
+- [x] Soft, Hard Ensemble
+- [x] Time Test Augment
+- [x] Multi Sample Dropout
+- [x] Focal Loss
+- [x] ArcFace Loss
+- [x] Label Smoothing Loss
+- [X] Angular Additive Margin Loss
+- [x] OverSampling
+- [x] K-Fold Validate
+- [x] Crop using MTCNN
+
 
 ## License
 This project is licensed under the MIT License. See  LICENSE for more details
