@@ -35,18 +35,20 @@ class MaskSubmitDataset(Dataset):
     """
     Submission Dataset
     """
-    def __init__(self, test_dir_path='/opt/ml/input/data/eval', crop=False, transform=None, image_path=None):
+    def __init__(self, test_dir_path='/opt/ml/input/data/eval', crop=False, transform=None, image_glob=None):
         super().__init__()
 
         self.test_dir_path = test_dir_path
         if crop == False:
             self.image_dir_path = os.path.join(self.test_dir_path, 'images')
-            self.df = pd.read_csv(os.path.join(self.test_dir_path, 'info.csv'))
         else:
             self.image_dir_path = os.path.join(self.test_dir_path, 'images_face_crop')
-            self.df = image_path
-        self.img_paths = [os.path.join(self.image_dir_path, img_id) \
-                            for img_id in self.df]
+     
+        if image_glob:
+            self.img_paths = [os.path.join(self.image_dir_path, img_id) for img_id in image_glob]
+        else:
+            self.df = pd.read_csv(os.path.join(self.test_dir_path, 'info.csv'))
+            self.img_paths = [os.path.join(self.image_dir_path, img_id) for img_id in self.df['ImageID']]
 
         self.transform = transform
 

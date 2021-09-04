@@ -74,7 +74,7 @@ def main(config):
 
         image_dir = os.path.join(test_dir, 'images_face_crop')
         check_image_paths = [os.path.join(image_dir, img_id) for img_id in df_tocheck.ImageID]
-        dataset = MaskSubmitDataset(crop=True, transform=default_trsfm, image_path=check_image_paths)
+        dataset = MaskSubmitDataset(crop=True, transform=default_trsfm, image_glob=check_image_paths)
         submit_data_loader = DataLoader(dataset, batch_size=32, shuffle=False, num_workers=8)
 
         # build model architecture
@@ -104,22 +104,18 @@ def main(config):
         trans_labels = []
         for i in zip(df_tocheck.ans, df_tocheck.ans2):
             trans_labels.append(trans_label(*i))
-        #print(trans_labels)
         df_tocheck['ans_trans'] = np.array(trans_labels).reshape(-1, 1)
-        df_tocheck.to_csv(os.path.join(test_dir, 'submission_age.csv'), index=False)
+        submission_age = df_tocheck.drop(['ans', 'ans2'], axis=1)
 
-        df_tocheck = df_tocheck.drop(['ans', 'ans2'], axis=1)
-        #f_tocheck = df_tocheck.rename(columns= {'ans_trans':'ans'}, inplace=True)
-        submission = pd.merge(submission, df_tocheck, on='ImageID', how='left')
-        print(submission)
-        for i in range(len(submission)):
-            if not submission['ans_trans'].iloc[i]:
-                submission['ans_trans'].iloc[i] = submission['ans'].iloc[i]
+        df = pd.merge(submission, submission_age, how='outer', left_on='ImageID', right_on='ImageID')
+        df.ans_trans[df.ans_trans.isna()] = df.ans[df.ans_trans.isna()]
+        df.ans_trans = df.ans_trans.astype(int)
+        df = df.drop('ans', axis=1)
+        submission = df.rename({"ans_trans":"ans"}, axis=1)
 
         # 제출할 파일을 저장합니다.
         save_name = '_'.join(str(config.resume).split(os.sep)[2:])
         save_path = os.path.join(test_dir, 'submission.csv')
-        print(submission[0:10])
         submission.to_csv(save_path, index=False)
         print(f'test inference is saved at {save_path}!')
         print('test inference is done!') 
