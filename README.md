@@ -80,9 +80,9 @@ Level 1 P-Stage Image Classification Project Repository
 ```
 
 ## Usage
-'''
-pip install https://github.com/ufoym/imbalanced-dataset-sampler/archive/master.zip
-'''
+ ```
+ pip install https://github.com/ufoym/imbalanced-dataset-sampler/archive/master.zip
+ ```
 Try `python train.py -c config.json` to run code.
 
 ### Config file format
