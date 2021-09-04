@@ -11,8 +11,8 @@ Level 1 P-Stage Image Classification Project Repository
 - 추창한 : 멀티 모델 실험, 모델의 성능 저하원인 분석
 - 한진 : 멀티 모델 실험, 모델의 성능 저하원인 분석
 
-## Summary
-![](https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F44d97de2-6ee2-450a-a779-3e5312930c2c%2FUntitled.png?table=block&id=1ad3b063-a67b-4759-aaaf-79c4cc13cdb5&spaceId=c2d12222-1595-4286-87c6-962a6736ab00&width=1920&userId=9ecd7741-f358-433f-a500-5ed6df612938&cache=v2)
+## Architecture
+![image](https://user-images.githubusercontent.com/41335296/132103298-161600bc-c6e3-4517-8eef-f35b69bd9727.png)
 
 ## Requirements
 * Python >= 3.5 (3.8 recommended)
