@@ -3,7 +3,16 @@
 Level 1 P-Stage Image Classification Project Repository
 
 ## Members
-* 김대웅, 나요한, 박준수, 이호영, 추창한, 최한준, 한진
+- 김대웅(팀장) : 스케쥴 및 할 일 관리, 전체 프레임워크 잡기
+- 나요한 : Augmentation 실험, 기본 모델들의 성능 평가 및 모델 구현에 기여
+- 박준수 : Augmentation 실험, 기본 모델들의 성능 평가 및 모델 구현에 기여
+- 이호영 : 데이터 EDA, 추가 데이터셋 확보에 기여
+- 최한준 : 데이터 EDA, 추가 데이터셋 확보에 기여
+- 추창한 : 멀티 모델 실험, 모델의 성능 저하원인 분석
+- 한진 : 멀티 모델 실험, 모델의 성능 저하원인 분석
+
+## Summary
+![](https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F44d97de2-6ee2-450a-a779-3e5312930c2c%2FUntitled.png?table=block&id=1ad3b063-a67b-4759-aaaf-79c4cc13cdb5&spaceId=c2d12222-1595-4286-87c6-962a6736ab00&width=1920&userId=9ecd7741-f358-433f-a500-5ed6df612938&cache=v2)
 
 ## Requirements
 * Python >= 3.5 (3.8 recommended)
@@ -205,8 +214,35 @@ You can submit from a previously saved checkpoint by:
 - [x] Crop using MTCNN
 
 
+
+
 ## License
 This project is licensed under the MIT License. See  LICENSE for more details
 
 ## Acknowledgements
 - We use this project template([PyTorch-template](https://github.com/victoresque/pytorch-template)) by [victoresque](https://github.com/victoresque)
+
+- vit_base_patch16_384
+
+![Untitled](https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F755ecbe9-d38f-4025-bcd5-89c9990e80de%2FUntitled.png?table=block&id=d54c6e5f-a5f6-4a72-b49e-59b16a87124e&spaceId=c2d12222-1595-4286-87c6-962a6736ab00&width=1920&userId=9ecd7741-f358-433f-a500-5ed6df612938&cache=v2)
+
+- Efficientnet_b3
+
+![Untitled](https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F33111841-8972-48ea-8e2d-fec83a3d6743%2FUntitled.png?table=block&id=8749f261-08ca-49b0-b716-40adc75d53e4&spaceId=c2d12222-1595-4286-87c6-962a6736ab00&width=1920&userId=9ecd7741-f358-433f-a500-5ed6df612938&cache=v2)
+
+### How to use this Code
+
+```python
+# BaseModel
+python3 train.py -c config_main.json
+# AgeModel
+python3 train.py -c config_sub.json
+
+# Submit
+python3 submit.py -c config_submit_main.json
+python3 submit.py -c config_submit_sub.json
+```
+
+- Oversampling
+- [MaskTheFace](https://github.com/aqeelanwar/MaskTheFace)
+- **[All-Age-Faces-Dataset](https://github.com/JingchunCheng/All-Age-Faces-Dataset)**
