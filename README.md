@@ -97,7 +97,7 @@ Config files are in `.json` format:
         "args": {}
     },
     "transforms_select": {
-        "type": "transforms_select",                               // seleecting transforms methods
+        "type": "transforms_select",                               // selecting transforms methods
         "args": {
             "method": "VIT_TRNS004",
             "default": "VIT_DEFAULT"
@@ -109,17 +109,17 @@ Config files are in `.json` format:
             "data_dir": "../input/data",  		    	   // dataset path
             "batch_size": 32,             			   // batch size
 			"shuffle": true,                           // shuffle training data before splitting
-			"validation_split": 0.1          						                // size of validation dataset. float(portion) or int(number of samples)
-			"num_workers": 2,                						                // number of cpu processes to be used for data loading
-			"trsfm": false,              						                    // use transforms
-			"submit": false                							                // submission
+			"validation_split": 0.1          	   // size of validation dataset. float(portion) or int(number of samples)
+			"num_workers": 2,                	   // number of cpu processes to be used for data loading
+			"trsfm": false,              		   // use transforms
+			"submit": false                		   // submission
 
         }
     },
     "optimizer": {
         "type": "Adam",
         "args": {
-            "lr": 2e-5,                     						         // learning rate
+            "lr": 2e-5,                     			   // learning rate
             "weight_decay": 0,                						       // (optional) weight decay
             "amsgrad": true
         }
