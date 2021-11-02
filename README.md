@@ -16,12 +16,10 @@ Level 1 P-Stage Image Classification Project Repository
 	![image](https://user-images.githubusercontent.com/41335296/132103298-161600bc-c6e3-4517-8eef-f35b69bd9727.png)
 
 - vit_base_patch16_384
-
-	![Untitled](https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F755ecbe9-d38f-4025-bcd5-89c9990e80de%2FUntitled.png?table=block&id=d54c6e5f-a5f6-4a72-b49e-59b16a87124e&spaceId=c2d12222-1595-4286-87c6-962a6736ab00&width=1920&userId=9ecd7741-f358-433f-a500-5ed6df612938&cache=v2)
-
+	![image](https://user-images.githubusercontent.com/26565404/139758414-1c1a4ed5-bf2a-4a64-9855-f75cf41257e5.png)
+	
 - Efficientnet_b3
-
-	![Untitled](https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F33111841-8972-48ea-8e2d-fec83a3d6743%2FUntitled.png?table=block&id=8749f261-08ca-49b0-b716-40adc75d53e4&spaceId=c2d12222-1595-4286-87c6-962a6736ab00&width=1920&userId=9ecd7741-f358-433f-a500-5ed6df612938&cache=v2)
+	![image](https://user-images.githubusercontent.com/26565404/139758630-5ef4581a-0171-42be-9978-045c11e4f126.png)
 
 
 ### Requirements
